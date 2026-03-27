@@ -234,7 +234,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 .lang-btn {
   font-family: var(--ff-h); font-size: 11px; letter-spacing: .8px;
   cursor: pointer; padding: 8px 14px; border-radius: 4px;
-  border: 1px solid var(--gold-d); color: var(--gold-d);
+  border: 2px solid var(--gold-d); color: var(--gold);
   background: var(--bg);
   transition: all .2s; user-select: none;
   outline: none;
@@ -244,11 +244,11 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.lang-btn:hover { color: var(--gold); border-color: var(--gold); }
+.lang-btn:hover { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,.1); }
 .lang-btn.active { 
   background: var(--gold-d); 
   color: var(--bg);
-  border-color: var(--gold-d);
+  border-color: var(--gold);
 }
 
 /* ═══════════════════════════════════════
@@ -547,14 +547,21 @@ function applyTranslations() {
 
 function updateLanguageSelector() {
   const selector = document.getElementById('lang-selector');
-  if (!selector) return;
+  if (!selector) {
+    console.warn('Language selector element not found');
+    return;
+  }
   selector.innerHTML = '';
-  Object.keys(TRANSLATIONS).forEach(lang => {
+  const langs = Object.keys(TRANSLATIONS);
+  console.log('Creating language buttons for:', langs);
+  langs.forEach(lang => {
     const btn = document.createElement('button');
     btn.className = 'lang-btn' + (lang === currentLang ? ' active' : '');
     btn.textContent = lang.toUpperCase();
+    btn.setAttribute('title', 'Switch to ' + lang.toUpperCase());
     btn.addEventListener('click', () => setLanguage(lang));
     selector.appendChild(btn);
+    console.log('Created button for:', lang, 'Active?', lang === currentLang);
   });
 }
 
@@ -1222,8 +1229,11 @@ document.getElementById('btn-later').addEventListener('click', () => {
 // ─────────────────────────────────────────────
 // INITIALIZE LOCALIZATION
 // ─────────────────────────────────────────────
+console.log('Initializing localization system');
+console.log('Current language:', currentLang);
 updateLanguageSelector();
 applyTranslations();
+console.log('Localization initialized complete');
 </script>
 </body>
 </html>
