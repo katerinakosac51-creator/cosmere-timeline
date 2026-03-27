@@ -561,23 +561,13 @@ function applyTranslations() {
 
 function updateLanguageSelector() {
   const buttons = document.querySelectorAll('.lang-btn');
-  console.log('Found lang buttons:', buttons.length);
   buttons.forEach(btn => {
     const lang = btn.getAttribute('data-lang');
     if (lang === currentLang) {
       btn.classList.add('active');
-      console.log('Activated button for:', lang);
     } else {
       btn.classList.remove('active');
     }
-    // Remove old listeners by cloning
-    const newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-    // Add new listener
-    newBtn.addEventListener('click', () => {
-      console.log('Language button clicked:', lang);
-      setLanguage(lang);
-    });
   });
 }
 
@@ -788,8 +778,7 @@ legendEl.appendChild(allBtn);
 const legItems = {};
 
 function rebuildLegend() {
-  // Clear existing legend items (except "All Worlds" button)
-  const allBtn = legendEl.querySelector('.leg-all');
+  // Clear existing legend items
   legendEl.innerHTML = '';
   
   const allBtnNew = Object.assign(document.createElement('button'), {
@@ -814,30 +803,13 @@ function rebuildLegend() {
   }
 }
 
-// Initial legend build
-const allBtn = Object.assign(document.createElement('button'), {
-  className: 'leg-all', textContent: t('allWorlds')
-});
-allBtn.addEventListener('click', () => setFilter(null));
-legendEl.appendChild(allBtn);
-
-for (const [id, p] of Object.entries(PLANETS)) {
-  const el = document.createElement('button');
-  el.className = 'leg-item';
-  el.style.setProperty('--pc', p.color);
-  el.innerHTML = `<span class="leg-dot" style="background:${p.color}88"></span>${getPlanetLabel(id)}`;
-  el.addEventListener('click', () => {
-    const toggling = activePlanet === id;
-    setFilter(toggling ? null : id);
-    if (!toggling) scrollToPlanet(id);
-  });
-  legendEl.appendChild(el);
-  legItems[id] = el;
-}
+// Initial legend build - single call
+rebuildLegend();
 
 function setFilter(pid) {
   activePlanet = pid;
-  allBtn.style.opacity = pid ? '0.45' : '1';
+  const allBtn = legendEl.querySelector('.leg-all');
+  if (allBtn) allBtn.style.opacity = pid ? '0.45' : '1';
   for (const [id, el] of Object.entries(legItems)) {
     el.classList.toggle('active', id === pid);
     el.classList.toggle('faded', !!pid && id !== pid);
@@ -1245,11 +1217,16 @@ document.getElementById('btn-later').addEventListener('click', () => {
 // ─────────────────────────────────────────────
 // INITIALIZE LOCALIZATION
 // ─────────────────────────────────────────────
-console.log('Initializing localization system');
-console.log('Current language:', currentLang);
+// Add event listeners to hardcoded language buttons
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.getAttribute('data-lang');
+    setLanguage(lang);
+  });
+});
+
 updateLanguageSelector();
 applyTranslations();
-console.log('Localization initialized complete');
 </script>
 </body>
 </html>
