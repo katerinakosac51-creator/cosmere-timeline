@@ -708,6 +708,40 @@ const TRANSLATIONS = {
     'sixthOfTheDusk_year_uk': 'Далеке майбутнє · ера міжпланетних подорожей',
     'islesOfTheEmberdark_year_uk': 'Далеке майбутнє · після Шостого від Сутінків · 2025',
     'theSunlitMan_year_uk': 'Далеке майбутнє · найпізніше хронологічно',
+    // Era labels and years
+    'era_yolen_label': 'Yolen · Pre-Shattering',
+    'era_yolen_year': 'Year 0 (Shattering)',
+    'era_taldain_label': 'Taldain · Earliest',
+    'era_taldain_year': '~500 PS',
+    'era_sel_label': 'Sel (Elantris era)',
+    'era_sel_year': '~1000 PS',
+    'era_scadrial1_label': 'Scadrial Era 1 · Mistborn',
+    'era_scadrial1_year': '~3200–3250 PS',
+    'era_threnody_label': 'Threnody / Nalthis',
+    'era_threnody_year': '~3500 PS',
+    'era_roshar_label': 'Roshar · Stormlight Arc 1',
+    'era_roshar_year': '1174–1175 SA',
+    'era_scadrial2_label': 'Scadrial Era 2',
+    'era_scadrial2_year': '~342 VE',
+    'era_future_label': 'Far Future · Secret Projects',
+    'era_future_year': '~5000+ PS',
+    // Era labels and years Ukrainian
+    'era_yolen_label_uk': 'Йолен · До Розколювання',
+    'era_yolen_year_uk': 'Рік 0 (Розколювання)',
+    'era_taldain_label_uk': 'Талдаїн · Найраніше',
+    'era_taldain_year_uk': '~500 ПР',
+    'era_sel_label_uk': 'Сел (ера Елантріса)',
+    'era_sel_year_uk': '~1000 ПР',
+    'era_scadrial1_label_uk': 'Скадріаль Ера 1 · Помпилка',
+    'era_scadrial1_year_uk': '~3200–3250 ПР',
+    'era_threnody_label_uk': 'Терафія / Нальтіс',
+    'era_threnody_year_uk': '~3500 ПР',
+    'era_roshar_label_uk': 'Рошар · Архів Шторму Дуга 1',
+    'era_roshar_year_uk': '1174–1175 СА',
+    'era_scadrial2_label_uk': 'Скадріаль Ера 2',
+    'era_scadrial2_year_uk': '~342 ВЕ',
+    'era_future_label_uk': 'Далеке майбутнє · Таємні проекти',
+    'era_future_year_uk': '~5000+ ПР',
   },
 };
 
@@ -759,6 +793,9 @@ function applyTranslations() {
   
   // Rebuild legend items with new labels
   rebuildLegend();
+  
+  // Rebuild era labels on canvas
+  rebuildEras();
 }
 
 function updateLanguageSelector() {
@@ -851,14 +888,14 @@ const BOOKS = [
 ];
 
 const ERAS = [
-  { x: 83,   label: 'Yolen · Pre-Shattering',      year: 'Year 0 (Shattering)' },
-  { x: 398,  label: 'Taldain · Earliest',           year: '~500 PS' },
-  { x: 585,  label: 'Sel (Elantris era)',            year: '~1000 PS' },
-  { x: 1230, label: 'Scadrial Era 1 · Mistborn',    year: '~3200–3250 PS' },
-  { x: 1838, label: 'Threnody / Nalthis',            year: '~3500 PS' },
-  { x: 2130, label: 'Roshar · Stormlight Arc 1',    year: '1174–1175 SA' },
-  { x: 2925, label: 'Scadrial Era 2',                year: '~342 VE' },
-  { x: 3525, label: 'Far Future · Secret Projects', year: '~5000+ PS' },
+  { x: 83,   labelKey: 'era_yolen',      yearKey: 'era_yolen_year' },
+  { x: 398,  labelKey: 'era_taldain',    yearKey: 'era_taldain_year' },
+  { x: 585,  labelKey: 'era_sel',        yearKey: 'era_sel_year' },
+  { x: 1230, labelKey: 'era_scadrial1',  yearKey: 'era_scadrial1_year' },
+  { x: 1838, labelKey: 'era_threnody',   yearKey: 'era_threnody_year' },
+  { x: 2130, labelKey: 'era_roshar',     yearKey: 'era_roshar_year' },
+  { x: 2925, labelKey: 'era_scadrial2',  yearKey: 'era_scadrial2_year' },
+  { x: 3525, labelKey: 'era_future',     yearKey: 'era_future_year' },
 ];
 
 const TOTAL_W = 4260;
@@ -1038,12 +1075,22 @@ window.addEventListener('resize', applyCanvasPadding);
 canvas.style.width = TOTAL_W + 'px';
 canvas.insertAdjacentHTML('beforeend', '<div class="axis"></div>');
 
-for (const e of ERAS) {
-  canvas.insertAdjacentHTML('beforeend', `
-    <div class="tick"    style="left:${e.x}px"></div>
-    <div class="era-lbl" style="left:${e.x}px">${e.label}</div>
-    <div class="yr-mark" style="left:${e.x}px">${e.year}</div>`);
+function rebuildEras() {
+  // Remove old era elements
+  const oldEras = canvas.querySelectorAll('.tick, .era-lbl, .yr-mark');
+  oldEras.forEach(el => el.remove());
+  
+  // Rebuild with current language
+  for (const e of ERAS) {
+    canvas.insertAdjacentHTML('beforeend', `
+      <div class="tick"    style="left:${e.x}px"></div>
+      <div class="era-lbl" style="left:${e.x}px">${t(e.labelKey)}</div>
+      <div class="yr-mark" style="left:${e.x}px">${t(e.yearKey)}</div>`);
+  }
 }
+
+// Initial build
+rebuildEras();
 
 
 for (const b of BOOKS) {
