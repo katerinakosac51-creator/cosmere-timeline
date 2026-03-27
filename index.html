@@ -228,27 +228,38 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 /* ── LANGUAGE SELECTOR ── */
 .lang-selector {
   position: fixed; top: 12px; right: 24px; z-index: 9998;
-  display: flex; gap: 6px;
+  display: flex; gap: 8px;
   align-items: center;
+  background: rgba(13, 13, 24, 0.95);
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
 }
 .lang-btn {
-  font-family: var(--ff-h); font-size: 11px; letter-spacing: .8px;
-  cursor: pointer; padding: 8px 14px; border-radius: 4px;
-  border: 2px solid var(--gold-d); color: var(--gold);
-  background: var(--bg);
+  font-family: var(--ff-h); font-size: 12px; letter-spacing: 1px;
+  cursor: pointer; padding: 10px 16px; border-radius: 4px;
+  border: 2px solid #c9a84c; color: #c9a84c;
+  background: transparent;
   transition: all .2s; user-select: none;
   outline: none;
   display: inline-block;
-  min-width: 45px;
+  min-width: 50px;
   text-align: center;
   white-space: nowrap;
   flex-shrink: 0;
+  font-weight: bold;
 }
-.lang-btn:hover { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,.1); }
+.lang-btn:hover { 
+  color: #fff; 
+  border-color: #fff; 
+  background: rgba(201,168,76,.2);
+  box-shadow: 0 0 8px rgba(201,168,76,.4);
+}
 .lang-btn.active { 
-  background: var(--gold-d); 
-  color: var(--bg);
-  border-color: var(--gold);
+  background: #c9a84c; 
+  color: #0d0d18;
+  border-color: #c9a84c;
+  box-shadow: 0 0 12px rgba(201,168,76,.6);
 }
 
 /* ═══════════════════════════════════════
