@@ -510,12 +510,214 @@ const TRANSLATIONS = {
     komashi: 'Комаші (Юмі)',
     fots: 'Перший від Сонця',
     canticle: 'Канон (Людина сонячного світла)',
+    // Book titles English
+    dragonsteel: 'Dragonsteel',
+    theSilenceDivine: 'The Silence Divine',
+    whiteSand: 'White Sand',
+    elantris: 'Elantris',
+    hopeOfElantris: 'Hope of Elantris',
+    theEmperorsSoul: "The Emperor's Soul",
+    elantrisBook2: 'Elantris Book 2',
+    elantrisBook3: 'Elantris Book 3',
+    theEleventhMetal: 'The Eleventh Metal',
+    theFinalEmpire: 'The Final Empire',
+    secretHistory: 'Secret History',
+    wellOfAscension: 'Well of Ascension',
+    heroOfAges: 'Hero of Ages',
+    shadowsForSilence: 'Shadows for Silence',
+    warbreaker: 'Warbreaker',
+    theWayOfKings: 'The Way of Kings',
+    wordsOfRadiance: 'Words of Radiance',
+    edgedancer: 'Edgedancer',
+    oathbringer: 'Oathbringer',
+    dawnshard: 'Dawnshard',
+    rhythmOfWar: 'Rhythm of War',
+    windAndTruth: 'Wind and Truth',
+    alloyOfLaw: 'Alloy of Law',
+    allomancerJak: 'Allomancer Jak',
+    shadowsOfSelf: 'Shadows of Self',
+    bandsOfMourning: 'Bands of Mourning',
+    theLostMetal: 'The Lost Metal',
+    tressOfTheEmeraldSea: 'Tress of the Emerald Sea',
+    yumiAndNightmarePainter: 'Yumi & Nightmare Painter',
+    sixthOfTheDusk: 'Sixth of the Dusk',
+    islesOfTheEmberdark: 'Isles of the Emberdark',
+    theSunlitMan: 'The Sunlit Man',
+    // Book titles Ukrainian
+    dragonsteel_uk: 'Драконна сталь',
+    theSilenceDivine_uk: 'Божественна тиша',
+    whiteSand_uk: 'Білий пісок',
+    elantris_uk: 'Елантріс',
+    hopeOfElantris_uk: 'Надія Елантріса',
+    theEmperorsSoul_uk: 'Душа empereur',
+    elantrisBook2_uk: 'Елантріс: Книга 2',
+    elantrisBook3_uk: 'Елантріс: Книга 3',
+    theEleventhMetal_uk: 'Одинадцятий метал',
+    theFinalEmpire_uk: 'Остання імперія',
+    secretHistory_uk: 'Таємна історія',
+    wellOfAscension_uk: 'Колодязь виявлення',
+    heroOfAges_uk: 'Герой віків',
+    shadowsForSilence_uk: 'Тіні мовчання',
+    warbreaker_uk: 'Підбивач миру',
+    theWayOfKings_uk: 'Шлях королів',
+    wordsOfRadiance_uk: 'Слова блиску',
+    edgedancer_uk: 'Танцівниця на межі',
+    oathbringer_uk: 'Принесець клятви',
+    dawnshard_uk: 'Уламок світанку',
+    rhythmOfWar_uk: 'Ритм війни',
+    windAndTruth_uk: 'Вітер і правда',
+    alloyOfLaw_uk: 'Сплав законів',
+    allomancerJak_uk: 'Алломант Джек',
+    shadowsOfSelf_uk: 'Тіні себе',
+    bandsOfMourning_uk: 'Браслети жалоби',
+    theLostMetal_uk: 'Втрачений метал',
+    tressOfTheEmeraldSea_uk: 'Тресс смарагдового моря',
+    yumiAndNightmarePainter_uk: 'Юмі та художник кошмарів',
+    sixthOfTheDusk_uk: 'Шостий від сутінків',
+    islesOfTheEmberdark_uk: 'Острови теплого морока',
+    theSunlitMan_uk: 'Людина сонячного світла',
+    // Book blurbs English
+    'dragonsteel_blurb': "Unpublished. Hoid's origin story. The Shattering of Adonalsium happens on Yolen.",
+    'theSilenceDivine_blurb': 'Unpublished novella set on Yolen. Explores its unique, separate magic system.',
+    'whiteSand_blurb': "Graphic novel trilogy. Sand mastery on a tidally locked world. Khriss's home planet.",
+    'elantris_blurb': 'First published Cosmere novel. Aons and the Dor. A city of fallen Elantrians.',
+    'hopeOfElantris_blurb': "Short story. The climax of Elantris from Ashe the seon's POV.",
+    'theEmperorsSoul_blurb': "Hugo Award winner. A Forger has 100 days to recreate an Emperor's soul.",
+    'elantrisBook2_blurb': "Forthcoming. 10 years after Elantris, set in Fjorden. Kiin's children as POVs.",
+    'elantrisBook3_blurb': 'Forthcoming finale of the Elantris trilogy.',
+    'theEleventhMetal_blurb': 'Short story prequel. Follows young Kelsier training under a mysterious Allomancer.',
+    'theFinalEmpire_blurb': 'Ash falls forever. The Lord Ruler reigns. Vin discovers she is a Mistborn.',
+    'secretHistory_blurb': "Novella. Kelsier's journey in the Cognitive Realm. Read after Hero of Ages.",
+    'wellOfAscension_blurb': 'After the Lord Ruler. Armies besiege Luthadel. Elend rises to lead.',
+    'heroOfAges_blurb': 'The Catacendre reshapes Scadrial. Harmony born from Ruin and Preservation.',
+    'shadowsForSilence_blurb': 'Shades haunt dark forests. An innkeeper hunts a dangerous bounty to save her family.',
+    'warbreaker_blurb': "BioChromatic Breath and the Returned gods. Vasher and Nightblood's origin on Nalthis.",
+    'theWayOfKings_blurb': 'Kaladin, Shallan, Dalinar. The Knights Radiant must return.',
+    'wordsOfRadiance_blurb': 'The Everstorm is coming. Szeth hunts. The Knights Radiant return.',
+    'edgedancer_blurb': 'Novella. Lift slides through a doomed city while chasing Darkness.',
+    'oathbringer_blurb': "Dalinar's dark past. The Everstorm merges realms. Battle of Thaylen City.",
+    'dawnshard_blurb': 'Novella. Rysn and Lopen voyage to the forbidden isle of Aimia.',
+    'rhythmOfWar_blurb': 'Fabrials. Navani bonds a spren. Urithiru is captured.',
+    'windAndTruth_blurb': "Szeth's arc. Battle for Shinovar. End of Stormlight Archive Arc 1.",
+    'alloyOfLaw_blurb': '~300 years after Catacendre. Industrial Scadrial. Wax and Wayne debut.',
+    'allomancerJak_blurb': 'Short story. Pulp-adventure tales of Allomancer Jak in the Roughs.',
+    'shadowsOfSelf_blurb': 'A Kandra is secretly murdering people. Revolution threatens Elendel.',
+    'bandsOfMourning_blurb': "The Lord Ruler's legendary bracers surface. Southern Scadrians revealed.",
+    'theLostMetal_blurb': "Trell / Autonomy revealed. Wax and Wayne's finale. Cosmere connections explode.",
+    'tressOfTheEmeraldSea_blurb': 'A girl sails deadly spore seas to rescue the boy she loves. Narrated by Hoid.',
+    'yumiAndNightmarePainter_blurb': 'Two people sharing one body across worlds. Spirit and technology collide.',
+    'sixthOfTheDusk_blurb': "A lone trapper finds outsiders have discovered his isolated world.",
+    'islesOfTheEmberdark_blurb': 'Direct sequel. Dusk and Leilani navigate a First of the Sun changed by outsiders.',
+    'theSunlitMan_blurb': "Nomad (Sigzil) flees across worlds. Most cosmere-heavy Secret Project.",
+    // Book years English
+    'dragonsteel_year': 'Pre-Shattering · Year ~0',
+    'theSilenceDivine_year': 'Pre-Shattering · Year ~0',
+    'whiteSand_year': '~500 PS · Earliest published Cosmere',
+    'elantris_year': '~1000 PS · Year 0 Arelish Reckoning',
+    'hopeOfElantris_year': '~1000 PS (concurrent with Elantris)',
+    'theEmperorsSoul_year': '~1000 PS · Sel, different region',
+    'elantrisBook2_year': '~1010 PS · Planned 2029',
+    'elantrisBook3_year': 'Planned 2030',
+    'theEleventhMetal_year': '~3200 PS · Before Final Empire',
+    'theFinalEmpire_year': '~3242 PS · Year 1000 of the Final Empire',
+    'secretHistory_year': '~3242 PS (runs alongside Era 1)',
+    'wellOfAscension_year': '~3243 PS · Year 1001 Final Empire',
+    'heroOfAges_year': '~3244 PS · The Catacendre',
+    'shadowsForSilence_year': '~3500 PS · Pre-Stormlight era',
+    'warbreaker_year': '~3500 PS · Concurrent with early Stormlight',
+    'theWayOfKings_year': '1174 SA (~3500 PS)',
+    'wordsOfRadiance_year': '1174 SA',
+    'edgedancer_year': '1174 SA · Between WoR & Oathbringer',
+    'oathbringer_year': '1175 SA',
+    'dawnshard_year': '1175 SA · Between Oath & RoW',
+    'rhythmOfWar_year': '1175 SA',
+    'windAndTruth_year': '1175 SA',
+    'alloyOfLaw_year': '~342 VE · ~3542 PS',
+    'allomancerJak_year': '~342 VE',
+    'shadowsOfSelf_year': '~342 VE',
+    'bandsOfMourning_year': '~342 VE',
+    'theLostMetal_year': '~342 VE',
+    'tressOfTheEmeraldSea_year': 'Far future · ~5000+ PS',
+    'yumiAndNightmarePainter_year': 'Far future · ~5000+ PS',
+    'sixthOfTheDusk_year': 'Far future · interplanetary travel era',
+    'islesOfTheEmberdark_year': 'Far future · after Sixth of the Dusk · 2025',
+    'theSunlitMan_year': 'Far future · latest chronologically',
+    // Book blurbs Ukrainian
+    'dragonsteel_blurb_uk': 'Невидана. Історія походження Хойда. Розколювання Адоналсіума відбувається на Йолені.',
+    'theSilenceDivine_blurb_uk': 'Невидана новела на Йолені. Дослідує унікальну окрему магічну систему.',
+    'whiteSand_blurb_uk': 'Трилогія графічних романів. Панування перед піском на світі, прикованому до Сонця. Домашня планета Крісс.',
+    'elantris_blurb_uk': 'Перший опублікований космер-роман. Аони й Дор. Місто занепалих Елантріанців.',
+    'hopeOfElantris_blurb_uk': 'Коротка історія. Кульмінація Елантріса з точки зору духа Еша.',
+    'theEmperorsSoul_blurb_uk': 'Переможець премії Гюґо. У кувальки є 100 днів, щоб відновити душу Імператора.',
+    'elantrisBook2_blurb_uk': 'Найскоро. Через 10 років після Елантріса, у Фйордені. Діти Кіна як ПОВи.',
+    'elantrisBook3_blurb_uk': 'Майбутній фіналь трилогії Елантріса.',
+    'theEleventhMetal_blurb_uk': 'Коротка історія-прикончення. Стежить за молодим Келсієром, який тренується під вчителем таємничого Алломанса.',
+    'theFinalEmpire_blurb_uk': 'Попіл падає вічно. Владика Правління править. Він виявляє, що вона Помпилка.',
+    'secretHistory_blurb_uk': 'Новела. Подорож Келсієра в Когнітивному царстві. Читайте після "Героя Віків".',
+    'wellOfAscension_blurb_uk': 'Після Владики Правління. Армії облягають Лютадель. Еленд стає лідером.',
+    'heroOfAges_blurb_uk': 'Катаценда переформує Скадріаль. Гармонія народжена від Руйнування й Збереження.',
+    'shadowsForSilence_blurb_uk': 'Привиди наслідують темні ліси. Кравчиня полює на небезпечного злочинця, щоб врятувати свою сім\'ю.',
+    'warbreaker_blurb_uk': 'БіоХронічне дихання й боги, що повернулися. Походження Вашера й Ніч-Клинка на Нальтісі.',
+    'theWayOfKings_blurb_uk': 'Калладін, Шаллан, Далінар. Лицарі Радіанту повинні повернутися.',
+    'wordsOfRadiance_blurb_uk': 'Вічна буря наближається. Сетс полює. Лицарі Радіанту повертаються.',
+    'edgedancer_blurb_uk': 'Новела. Ліфт ковзає крізь приречене місто, полюючи на Темряву.',
+    'oathbringer_blurb_uk': 'Темне минуле Далінара. Вічна буря сполучає царства. Битва при Таленському міста.',
+    'dawnshard_blurb_uk': 'Новела. Рісн і Лопен здійснюють подорож на заборонений острів Еймія.',
+    'rhythmOfWar_blurb_uk': 'Фабріалі. Навані зв\'язує духа. Уритіру захоплюють.',
+    'windAndTruth_blurb_uk': 'Дуга Сетса. Битва за Шиновар. Кінець 1-ї арки Архіву Шторму.',
+    'alloyOfLaw_blurb_uk': 'Близько 300 років після Катаценди. Індустріальна Скадріаль. Дебют Вакса й Вейна.',
+    'allomancerJak_blurb_uk': 'Коротка історія. Приквели-пригоди про Алломанта Джека в Лугах.',
+    'shadowsOfSelf_blurb_uk': 'Канда таємно вбиває людей. Революція загрожує Елендель.',
+    'bandsOfMourning_blurb_uk': 'Легендарні браслети Владики Правління виникають. Південні Скадріанці розкриті.',
+    'theLostMetal_blurb_uk': 'Трелл / Автономія розкрита. Фіналь Вакса й Вейна. Космер-зв\'язки вибухають.',
+    'tressOfTheEmeraldSea_blurb_uk': 'Дівчина пливе крізь смертельні моря спор, щоб врятувати хлопця, якого вона любить. Розповідає Хойда.',
+    'yumiAndNightmarePainter_blurb_uk': 'Дві людини діляють одне тіло через світи. Дух й технологія стикаються.',
+    'sixthOfTheDusk_blurb_uk': 'Самотній мисливець виявляє, що чужинці відкрили його ізольований світ.',
+    'islesOfTheEmberdark_blurb_uk': 'Прямий сиквел. Сутінки й Лейлані навігують найпершим від Сонця, змінена чужинцями.',
+    'theSunlitMan_blurb_uk': 'Кочовник (Сігзіл) втікає через світи. Найбільш космер-важка таємна проект.',
+    // Book years Ukrainian
+    'dragonsteel_year_uk': 'До Розколювання · Рік ~0',
+    'theSilenceDivine_year_uk': 'До Розколювання · Рік ~0',
+    'whiteSand_year_uk': '~500 ПР · Найранніший опублікований Космер',
+    'elantris_year_uk': '~1000 ПР · Рік 0 Арелейського літочислення',
+    'hopeOfElantris_year_uk': '~1000 ПР (одночасно з Елантрісом)',
+    'theEmperorsSoul_year_uk': '~1000 ПР · Сел, інший регіон',
+    'elantrisBook2_year_uk': '~1010 ПР · Запланована на 2029',
+    'elantrisBook3_year_uk': 'Запланована на 2030',
+    'theEleventhMetal_year_uk': '~3200 ПР · Перед Фінальною імпе рією',
+    'theFinalEmpire_year_uk': '~3242 ПР · Рік 1000 Фінальної імперії',
+    'secretHistory_year_uk': '~3242 ПР (паралельно з Ерою 1)',
+    'wellOfAscension_year_uk': '~3243 ПР · Рік 1001 Фінальної імперії',
+    'heroOfAges_year_uk': '~3244 ПР · Катаценда',
+    'shadowsForSilence_year_uk': '~3500 ПР · До ери Шторму',
+    'warbreaker_year_uk': '~3500 ПР · Одночасно з ранньою Шторм-архівом',
+    'theWayOfKings_year_uk': '1174 СА (~3500 ПР)',
+    'wordsOfRadiance_year_uk': '1174 СА',
+    'edgedancer_year_uk': '1174 СА · Між ВР і Присяго приносцем',
+    'oathbringer_year_uk': '1175 СА',
+    'dawnshard_year_uk': '1175 СА · Між Присяго- й РВ',
+    'rhythmOfWar_year_uk': '1175 СА',
+    'windAndTruth_year_uk': '1175 СА',
+    'alloyOfLaw_year_uk': '~342 ВЕ · ~3542 ПР',
+    'allomancerJak_year_uk': '~342 ВЕ',
+    'shadowsOfSelf_year_uk': '~342 ВЕ',
+    'bandsOfMourning_year_uk': '~342 ВЕ',
+    'theLostMetal_year_uk': '~342 ВЕ',
+    'tressOfTheEmeraldSea_year_uk': 'Далеке майбутнє · ~5000+ ПР',
+    'yumiAndNightmarePainter_year_uk': 'Далеке майбутнє · ~5000+ ПР',
+    'sixthOfTheDusk_year_uk': 'Далеке майбутнє · ера міжпланетних подорожей',
+    'islesOfTheEmberdark_year_uk': 'Далеке майбутнє · після Шостого від Сутінків · 2025',
+    'theSunlitMan_year_uk': 'Далеке майбутнє · найпізніше хронологічно',
   },
 };
 
 let currentLang = localStorage.getItem('cosmere-lang') || 'en';
 
 function t(key) {
+  // Try with current language suffix for Ukrainian
+  if (currentLang === 'uk' && TRANSLATIONS.uk[key + '_uk']) {
+    return TRANSLATIONS.uk[key + '_uk'];
+  }
   return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.en[key] || key;
 }
 
@@ -614,38 +816,38 @@ function getPlanetLabel(planetId) {
 
 // x positions scaled 50% larger (originals × 1.5, rounded to nearest 5)
 const BOOKS = [
-  { title: 'Dragonsteel',         planet: 'yolen',     x: 105,  above: true,  stemH: 135, year: 'Pre-Shattering · Year ~0',                   blurb: "Unpublished. Hoid's origin story. The Shattering of Adonalsium happens on Yolen.", upcoming: true },
-  { title: 'The Silence Divine',  planet: 'yolen',     x: 235,  above: false, stemH: 83,  year: 'Pre-Shattering · Year ~0',                   blurb: 'Unpublished novella set on Yolen. Explores its unique, separate magic system.', upcoming: true },
-  { title: 'White Sand',          planet: 'taldain',   x: 420,  above: true,  stemH: 120, year: '~500 PS · Earliest published Cosmere',        blurb: "Graphic novel trilogy. Sand mastery on a tidally locked world. Khriss's home planet." },
-  { title: 'Elantris',            planet: 'sel',       x: 608,  above: false, stemH: 98,  year: '~1000 PS · Year 0 Arelish Reckoning',         blurb: 'First published Cosmere novel. Aons and the Dor. A city of fallen Elantrians.' },
-  { title: 'Hope of Elantris',    planet: 'sel',       x: 720,  above: true,  stemH: 72,  year: '~1000 PS (concurrent with Elantris)',          blurb: "Short story. The climax of Elantris from Ashe the seon's POV." },
-  { title: "The Emperor's Soul",  planet: 'sel',       x: 833,  above: false, stemH: 83,  year: '~1000 PS · Sel, different region',             blurb: "Hugo Award winner. A Forger has 100 days to recreate an Emperor's soul." },
-  { title: 'Elantris Book 2',     planet: 'sel',       x: 945,  above: true,  stemH: 98,  year: '~1010 PS · Planned 2029',                      blurb: "Forthcoming. 10 years after Elantris, set in Fjorden. Kiin's children as POVs.", upcoming: true },
-  { title: 'Elantris Book 3',     planet: 'sel',       x: 1058, above: false, stemH: 78,  year: 'Planned 2030',                                  blurb: 'Forthcoming finale of the Elantris trilogy.', upcoming: true },
-  { title: 'The Eleventh Metal',  planet: 'scadrial1', x: 1245, above: true,  stemH: 78,  year: '~3200 PS · Before Final Empire',               blurb: 'Short story prequel. Follows young Kelsier training under a mysterious Allomancer.' },
-  { title: 'The Final Empire',    planet: 'scadrial1', x: 1358, above: false, stemH: 210, year: '~3242 PS · Year 1000 of the Final Empire',     blurb: 'Ash falls forever. The Lord Ruler reigns. Vin discovers she is a Mistborn.' },
-  { title: 'Secret History',      planet: 'scadrial1', x: 1470, above: true,  stemH: 93,  year: '~3242 PS (runs alongside Era 1)',               blurb: "Novella. Kelsier's journey in the Cognitive Realm. Read after Hero of Ages." },
-  { title: 'Well of Ascension',   planet: 'scadrial1', x: 1583, above: false, stemH: 87,  year: '~3243 PS · Year 1001 Final Empire',            blurb: 'After the Lord Ruler. Armies besiege Luthadel. Elend rises to lead.' },
-  { title: 'Hero of Ages',        planet: 'scadrial1', x: 1695, above: true,  stemH: 120, year: '~3244 PS · The Catacendre',                    blurb: 'The Catacendre reshapes Scadrial. Harmony born from Ruin and Preservation.' },
-  { title: 'Shadows for Silence', planet: 'threnody',  x: 1860, above: false, stemH: 93,  year: '~3500 PS · Pre-Stormlight era',                blurb: 'Shades haunt dark forests. An innkeeper hunts a dangerous bounty to save her family.' },
-  { title: 'Warbreaker',          planet: 'nalthis',   x: 1992, above: true,  stemH: 143, year: '~3500 PS · Concurrent with early Stormlight',  blurb: "BioChromatic Breath and the Returned gods. Vasher and Nightblood's origin on Nalthis." },
-  { title: 'The Way of Kings',    planet: 'roshar',    x: 2157, above: false, stemH: 233, year: '1174 SA (~3500 PS)',                            blurb: 'Kaladin, Shallan, Dalinar. The Knights Radiant must return.' },
-  { title: 'Words of Radiance',   planet: 'roshar',    x: 2277, above: true,  stemH: 102, year: '1174 SA',                                       blurb: 'The Everstorm is coming. Szeth hunts. The Knights Radiant return.' },
-  { title: 'Edgedancer',          planet: 'roshar',    x: 2375, above: false, stemH: 87,  year: '1174 SA · Between WoR & Oathbringer',           blurb: 'Novella. Lift slides through a doomed city while chasing Darkness.' },
-  { title: 'Oathbringer',         planet: 'roshar',    x: 2472, above: true,  stemH: 117, year: '1175 SA',                                       blurb: "Dalinar's dark past. The Everstorm merges realms. Battle of Thaylen City." },
-  { title: 'Dawnshard',           planet: 'roshar',    x: 2570, above: false, stemH: 78,  year: '1175 SA · Between Oath & RoW',                  blurb: 'Novella. Rysn and Lopen voyage to the forbidden isle of Aimia.' },
-  { title: 'Rhythm of War',       planet: 'roshar',    x: 2667, above: true,  stemH: 138, year: '1175 SA',                                       blurb: 'Fabrials. Navani bonds a spren. Urithiru is captured.' },
-  { title: 'Wind and Truth',      planet: 'roshar',    x: 2780, above: false, stemH: 117, year: '1175 SA',                                       blurb: "Szeth's arc. Battle for Shinovar. End of Stormlight Archive Arc 1." },
-  { title: 'Alloy of Law',        planet: 'scadrial2', x: 2948, above: true,  stemH: 87,  year: '~342 VE · ~3542 PS',                            blurb: '~300 years after Catacendre. Industrial Scadrial. Wax and Wayne debut.' },
-  { title: 'Allomancer Jak',      planet: 'scadrial2', x: 3045, above: false, stemH: 69,  year: '~342 VE',                                       blurb: 'Short story. Pulp-adventure tales of Allomancer Jak in the Roughs.' },
-  { title: 'Shadows of Self',     planet: 'scadrial2', x: 3150, above: true,  stemH: 102, year: '~342 VE',                                       blurb: 'A Kandra is secretly murdering people. Revolution threatens Elendel.' },
-  { title: 'Bands of Mourning',   planet: 'scadrial2', x: 3263, above: false, stemH: 78,  year: '~342 VE',                                       blurb: "The Lord Ruler's legendary bracers surface. Southern Scadrians revealed." },
-  { title: 'The Lost Metal',      planet: 'scadrial2', x: 3375, above: true,  stemH: 117, year: '~342 VE',                                       blurb: "Trell / Autonomy revealed. Wax and Wayne's finale. Cosmere connections explode." },
-  { title: 'Tress of the Emerald Sea', planet: 'lumar',    x: 3555, above: false, stemH: 102, year: 'Far future · ~5000+ PS',                   blurb: 'A girl sails deadly spore seas to rescue the boy she loves. Narrated by Hoid.' },
-  { title: 'Yumi & Nightmare Painter', planet: 'komashi',  x: 3675, above: true,  stemH: 123, year: 'Far future · ~5000+ PS',                   blurb: 'Two people sharing one body across worlds. Spirit and technology collide.' },
-  { title: 'Sixth of the Dusk',        planet: 'fots',     x: 3788, above: false, stemH: 93,  year: 'Far future · interplanetary travel era',   blurb: "A lone trapper finds outsiders have discovered his isolated world." },
-  { title: 'Isles of the Emberdark',   planet: 'fots',     x: 3900, above: true,  stemH: 108, year: 'Far future · after Sixth of the Dusk · 2025', blurb: 'Direct sequel. Dusk and Leilani navigate a First of the Sun changed by outsiders.' },
-  { title: 'The Sunlit Man',           planet: 'canticle', x: 4020, above: false, stemH: 135, year: 'Far future · latest chronologically',      blurb: "Nomad (Sigzil) flees across worlds. Most cosmere-heavy Secret Project." },
+  { titleKey: 'dragonsteel',         planet: 'yolen',     x: 105,  above: true,  stemH: 135, yearKey: 'dragonsteel_year',         blurbKey: 'dragonsteel_blurb', upcoming: true },
+  { titleKey: 'theSilenceDivine',    planet: 'yolen',     x: 235,  above: false, stemH: 83,  yearKey: 'theSilenceDivine_year',    blurbKey: 'theSilenceDivine_blurb', upcoming: true },
+  { titleKey: 'whiteSand',           planet: 'taldain',   x: 420,  above: true,  stemH: 120, yearKey: 'whiteSand_year',           blurbKey: 'whiteSand_blurb' },
+  { titleKey: 'elantris',            planet: 'sel',       x: 608,  above: false, stemH: 98,  yearKey: 'elantris_year',            blurbKey: 'elantris_blurb' },
+  { titleKey: 'hopeOfElantris',      planet: 'sel',       x: 720,  above: true,  stemH: 72,  yearKey: 'hopeOfElantris_year',      blurbKey: 'hopeOfElantris_blurb' },
+  { titleKey: 'theEmperorsSoul',     planet: 'sel',       x: 833,  above: false, stemH: 83,  yearKey: 'theEmperorsSoul_year',     blurbKey: 'theEmperorsSoul_blurb' },
+  { titleKey: 'elantrisBook2',       planet: 'sel',       x: 945,  above: true,  stemH: 98,  yearKey: 'elantrisBook2_year',       blurbKey: 'elantrisBook2_blurb', upcoming: true },
+  { titleKey: 'elantrisBook3',       planet: 'sel',       x: 1058, above: false, stemH: 78,  yearKey: 'elantrisBook3_year',       blurbKey: 'elantrisBook3_blurb', upcoming: true },
+  { titleKey: 'theEleventhMetal',    planet: 'scadrial1', x: 1245, above: true,  stemH: 78,  yearKey: 'theEleventhMetal_year',    blurbKey: 'theEleventhMetal_blurb' },
+  { titleKey: 'theFinalEmpire',      planet: 'scadrial1', x: 1358, above: false, stemH: 210, yearKey: 'theFinalEmpire_year',      blurbKey: 'theFinalEmpire_blurb' },
+  { titleKey: 'secretHistory',       planet: 'scadrial1', x: 1470, above: true,  stemH: 93,  yearKey: 'secretHistory_year',       blurbKey: 'secretHistory_blurb' },
+  { titleKey: 'wellOfAscension',     planet: 'scadrial1', x: 1583, above: false, stemH: 87,  yearKey: 'wellOfAscension_year',     blurbKey: 'wellOfAscension_blurb' },
+  { titleKey: 'heroOfAges',          planet: 'scadrial1', x: 1695, above: true,  stemH: 120, yearKey: 'heroOfAges_year',          blurbKey: 'heroOfAges_blurb' },
+  { titleKey: 'shadowsForSilence',   planet: 'threnody',  x: 1860, above: false, stemH: 93,  yearKey: 'shadowsForSilence_year',   blurbKey: 'shadowsForSilence_blurb' },
+  { titleKey: 'warbreaker',          planet: 'nalthis',   x: 1992, above: true,  stemH: 143, yearKey: 'warbreaker_year',          blurbKey: 'warbreaker_blurb' },
+  { titleKey: 'theWayOfKings',       planet: 'roshar',    x: 2157, above: false, stemH: 233, yearKey: 'theWayOfKings_year',       blurbKey: 'theWayOfKings_blurb' },
+  { titleKey: 'wordsOfRadiance',     planet: 'roshar',    x: 2277, above: true,  stemH: 102, yearKey: 'wordsOfRadiance_year',     blurbKey: 'wordsOfRadiance_blurb' },
+  { titleKey: 'edgedancer',          planet: 'roshar',    x: 2375, above: false, stemH: 87,  yearKey: 'edgedancer_year',          blurbKey: 'edgedancer_blurb' },
+  { titleKey: 'oathbringer',         planet: 'roshar',    x: 2472, above: true,  stemH: 117, yearKey: 'oathbringer_year',         blurbKey: 'oathbringer_blurb' },
+  { titleKey: 'dawnshard',           planet: 'roshar',    x: 2570, above: false, stemH: 78,  yearKey: 'dawnshard_year',           blurbKey: 'dawnshard_blurb' },
+  { titleKey: 'rhythmOfWar',         planet: 'roshar',    x: 2667, above: true,  stemH: 138, yearKey: 'rhythmOfWar_year',         blurbKey: 'rhythmOfWar_blurb' },
+  { titleKey: 'windAndTruth',        planet: 'roshar',    x: 2780, above: false, stemH: 117, yearKey: 'windAndTruth_year',        blurbKey: 'windAndTruth_blurb' },
+  { titleKey: 'alloyOfLaw',          planet: 'scadrial2', x: 2948, above: true,  stemH: 87,  yearKey: 'alloyOfLaw_year',          blurbKey: 'alloyOfLaw_blurb' },
+  { titleKey: 'allomancerJak',       planet: 'scadrial2', x: 3045, above: false, stemH: 69,  yearKey: 'allomancerJak_year',       blurbKey: 'allomancerJak_blurb' },
+  { titleKey: 'shadowsOfSelf',       planet: 'scadrial2', x: 3150, above: true,  stemH: 102, yearKey: 'shadowsOfSelf_year',       blurbKey: 'shadowsOfSelf_blurb' },
+  { titleKey: 'bandsOfMourning',     planet: 'scadrial2', x: 3263, above: false, stemH: 78,  yearKey: 'bandsOfMourning_year',     blurbKey: 'bandsOfMourning_blurb' },
+  { titleKey: 'theLostMetal',        planet: 'scadrial2', x: 3375, above: true,  stemH: 117, yearKey: 'theLostMetal_year',        blurbKey: 'theLostMetal_blurb' },
+  { titleKey: 'tressOfTheEmeraldSea', planet: 'lumar',    x: 3555, above: false, stemH: 102, yearKey: 'tressOfTheEmeraldSea_year', blurbKey: 'tressOfTheEmeraldSea_blurb' },
+  { titleKey: 'yumiAndNightmarePainter', planet: 'komashi',  x: 3675, above: true,  stemH: 123, yearKey: 'yumiAndNightmarePainter_year', blurbKey: 'yumiAndNightmarePainter_blurb' },
+  { titleKey: 'sixthOfTheDusk',      planet: 'fots',     x: 3788, above: false, stemH: 93,  yearKey: 'sixthOfTheDusk_year',      blurbKey: 'sixthOfTheDusk_blurb' },
+  { titleKey: 'islesOfTheEmberdark', planet: 'fots',     x: 3900, above: true,  stemH: 108, yearKey: 'islesOfTheEmberdark_year', blurbKey: 'islesOfTheEmberdark_blurb' },
+  { titleKey: 'theSunlitMan',        planet: 'canticle', x: 4020, above: false, stemH: 135, yearKey: 'theSunlitMan_year',        blurbKey: 'theSunlitMan_blurb' },
 ];
 
 const ERAS = [
@@ -846,7 +1048,8 @@ for (const e of ERAS) {
 
 for (const b of BOOKS) {
   const p   = PLANETS[b.planet];
-  const url = COVER_URL[b.title] ?? null;
+  const englishTitle = TRANSLATIONS.en[b.titleKey];
+  const url = COVER_URL[englishTitle] ?? null;
 
   // Dot
   const dot = document.createElement('div');
@@ -873,18 +1076,18 @@ for (const b of BOOKS) {
   if (url && !b.upcoming) {
     const img = document.createElement('img');
     img.crossOrigin = 'anonymous';
-    img.alt = b.title; img.loading = 'lazy';
+    img.alt = t(b.titleKey); img.loading = 'lazy';
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
     img.addEventListener('load', () => trimCoverImage(img, cw));
     img.src = url;
     img.addEventListener('error', function h() {
       this.removeEventListener('error', h);
       this.style.display = 'none';
-      cw.appendChild(fallback(b.title, p.color, false));
+      cw.appendChild(fallback(t(b.titleKey), p.color, false));
     });
     cw.appendChild(img);
   } else {
-    cw.appendChild(fallback(b.title, p.color, !!b.upcoming));
+    cw.appendChild(fallback(t(b.titleKey), p.color, !!b.upcoming));
     if (b.upcoming) { cw.style.borderStyle = 'dashed'; cw.style.opacity = '0.6'; }
   }
 
@@ -970,7 +1173,7 @@ function showOverlay(b, p, url) {
     const token = ++loadToken;
     ovImgEl.style.display = 'block';
     ovFall.style.display  = 'none';
-    ovImgEl.alt           = b.title;
+    ovImgEl.alt           = t(b.titleKey);
     ovImgEl.crossOrigin   = 'anonymous';
     ovImgEl.onload  = () => { if (loadToken === token) trimCoverImage(ovImgEl, ovImgWrap); };
     ovImgEl.onerror = () => {
@@ -978,7 +1181,7 @@ function showOverlay(b, p, url) {
       ovImgEl.style.display = 'none';
       ovFall.style.display  = 'flex';
       ovFall.style.color    = p.color;
-      ovFall.textContent    = b.title;
+      ovFall.textContent    = t(b.titleKey);
     };
     ovImgEl.src = url;
   } else {
@@ -987,17 +1190,17 @@ function showOverlay(b, p, url) {
     ovFall.style.display  = 'flex';
     ovFall.style.color    = p.color;
     ovFall.innerHTML = b.upcoming
-      ? `<div style="font-size:12px;opacity:.5;margin-bottom:10px">✦ FORTHCOMING</div><div style="font-size:20px">${b.title}</div>`
-      : `<div style="font-size:18px">${b.title}</div>`;
+      ? `<div style="font-size:12px;opacity:.5;margin-bottom:10px">✦ FORTHCOMING</div><div style="font-size:20px">${t(b.titleKey)}</div>`
+      : `<div style="font-size:18px">${t(b.titleKey)}</div>`;
   }
 
   ovImgWrap.style.borderColor = p.color + '99';
   // ── Text always matches the book being hovered ──
-  ovTitle.textContent  = b.title;
+  ovTitle.textContent  = t(b.titleKey);
   ovPlanet.textContent = getPlanetLabel(b.planet);
   ovPlanet.style.color = p.color;
-  ovYear.textContent   = b.year;
-  const words  = b.blurb.split(' ');
+  ovYear.textContent   = t(b.yearKey);
+  const words  = t(b.blurbKey).split(' ');
   const chunks = [];
   for (let i = 0; i < words.length; i += 6) chunks.push(words.slice(i, i + 6).join(' '));
   ovBlurb.innerHTML = chunks.map((c, i) =>
@@ -1027,7 +1230,8 @@ document.addEventListener('mousemove', e => {
     if (!isNaN(idx)) {
       const b = BOOKS[idx];
       const p = PLANETS[b.planet];
-      const url = COVER_URL[b.title] ?? null;
+      const englishTitle = TRANSLATIONS.en[b.titleKey];
+      const url = COVER_URL[englishTitle] ?? null;
       clearTimeout(hideTimer);
       showOverlay(b, p, url);
     }
