@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cosmere Timeline</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold:    #c9a84c;
+  --gold-d:  #7a6230;
+  --bg:      #0d0d18;
+  --surface: #1a1a2e;
+  --text:    #d4cfc4;
+  --muted:   #6b6660;
+  --ff-h:    'Cinzel', serif;
+  --ff-b:    'Crimson Pro', Georgia, serif;
+}
+html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--ff-b); }
+
+/* ── HOVER OVERLAY ── */
+#overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center; gap: 56px;
+  padding: 56px;
+  background: rgba(10,10,22,0);
+  pointer-events: none;
+  z-index: 9999;
+  transition: background .22s;
+}
+#ov-backdrop {
+  position: absolute; inset: 0;
+  z-index: 0;
+  cursor: default;
+}
+#ov-img, #ov-info { position: relative; z-index: 1; }
+#overlay.on { background: rgba(10,10,22,.84); }  /* pointer-events stays none */
+
+#ov-img {
+  width: 300px; height: 450px; flex-shrink: 0;
+  border-radius: 8px; overflow: hidden;
+  border: 2px solid var(--gold-d);
+  background: var(--surface);
+  opacity: 0; transform: scale(.88);
+  transition: opacity .25s, transform .25s;
+}
+#overlay.on #ov-img { opacity: 1; transform: scale(1); }
+#ov-img img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
+#ov-fall {
+  width: 100%; height: 100%;
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 20px;
+  font-family: var(--ff-h); font-size: 16px; line-height: 1.5;
+}
+
+#ov-info {
+  max-width: 420px;
+  opacity: 0; transform: translateX(20px);
+  transition: opacity .25s .08s, transform .25s .08s;
+}
+#overlay.on #ov-info { opacity: 1; transform: translateX(0); }
+#ov-title  { font-family: var(--ff-h); font-size: 28px; color: var(--gold); margin-bottom: 8px; line-height: 1.2; }
+#ov-planet { font-size: 15px; margin-bottom: 4px; letter-spacing: .5px; }
+#ov-year   { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 20px; }
+#ov-rule   { width: 48px; height: 1px; background: var(--gold-d); margin-bottom: 20px; }
+#ov-blurb  { font-size: 18px; line-height: 1.8; }
+
+@keyframes slideLine { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.ov-line { display: block; opacity: 0; animation: slideLine .3s forwards; }
+
+/* ── PAGE ── */
+.page { width: 100%; max-width: 1920px; margin: 0 auto; }
+
+.header { text-align: center; padding: 28px 24px 12px; border-bottom: 1px solid rgba(201,168,76,.15); background: var(--bg); position: relative; z-index: 200; }
+.header h1 { font-family: var(--ff-h); font-size: 36px; color: var(--gold); letter-spacing: 8px; margin-bottom: 6px; }
+.header p  { font-size: 16px; color: var(--muted); letter-spacing: 2px; font-style: italic; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  padding: 10px 24px 8px; border-bottom: 1px solid rgba(255,255,255,.05);
+  background: var(--bg); position: relative; z-index: 200;
+}
+
+/* All Worlds button */
+.leg-all {
+  font-family: var(--ff-h); font-size: 11px; letter-spacing: .8px;
+  cursor: pointer; padding: 7px 16px; border-radius: 24px;
+  border: 1px solid var(--gold-d); color: var(--gold-d);
+  background: transparent;
+  transition: all .2s; user-select: none;
+}
+.leg-all:hover { color: var(--gold); border-color: var(--gold); }
+
+/* Planet pill — solid background for readability */
+.leg-item {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--ff-h); font-size: 11px; letter-spacing: .6px;
+  cursor: pointer; padding: 7px 14px; border-radius: 24px;
+  border: 1.5px solid transparent;
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  transition: all .2s; user-select: none;
+}
+.leg-item:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
+
+/* Active: solid fill with planet color, dark text for contrast */
+.leg-item.active {
+  background: var(--pc);
+  border-color: var(--pc);
+  color: #0d0d18;         /* dark text on coloured bg */
+  box-shadow: 0 0 14px -3px var(--pc);
+}
+.leg-item.active .leg-dot { background: rgba(0,0,0,.4) !important; }
+.leg-item.faded { opacity: .2; }
+
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; transition: transform .2s; }
+.leg-item.active .leg-dot { transform: scale(1.35); }
+
+
+/* ── SCROLL AREA ── */
+.tl-outer {
+  overflow-x: auto; overflow-y: visible;
+  padding: 8px 80px 0;
+  cursor: grab;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.tl-outer::-webkit-scrollbar { display: none; }
+.tl-outer:active { cursor: grabbing; }
+
+.tl-canvas { position: relative; height: 860px; overflow: visible; margin-top: -99px; }
+
+/* ── AXIS ── */
+.axis {
+  position: absolute; left: 0; right: 0; top: 410px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.45) 2%, rgba(201,168,76,.45) 98%, transparent);
+  pointer-events: none;
+}
+
+/* Era label — below axis */
+.era-lbl {
+  position: absolute; top: 434px;
+  font-family: var(--ff-h); font-size: 13px; color: var(--gold-d); letter-spacing: 0.8px;
+  transform: translateX(-50%); white-space: nowrap; pointer-events: none;
+}
+
+/* Year marker — above axis */
+.yr-mark {
+  position: absolute; top: 358px;
+  font-family: var(--ff-h); font-size: 12px; color: rgba(201,168,76,.65); letter-spacing: 0.4px;
+  transform: translateX(-50%); white-space: nowrap; pointer-events: none;
+  padding-top: 0;
+}
+
+.tick { position: absolute; top: 401px; width: 1px; height: 18px; background: rgba(201,168,76,.22); pointer-events: none; }
+
+/* ── AXIS DOT ── */
+.adot {
+  position: absolute; top: 401px;
+  width: 12px; height: 12px; border-radius: 50%;
+  transform: translateX(-50%);
+  border: 2px solid var(--bg); z-index: 5;
+  transition: opacity .3s;
+}
+.adot.faded { opacity: .07; }
+
+/* ── BOOK ── */
+.bk {
+  position: absolute; width: 110px;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; z-index: 10; overflow: visible;
+  transition: opacity .3s;
+}
+.bk.faded { opacity: .07; pointer-events: none; }
+.bk { z-index: 10; }
+.cw:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(0,0,0,.7); z-index: 100; cursor: pointer; }
+
+.stem { width: 1.5px; opacity: .4; flex-shrink: 0; align-self: center; }
+
+.cw {
+  width: 108px; height: 162px; border-radius: 4px;
+  border: none;
+  background: var(--surface); position: relative; flex-shrink: 0; overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.cw img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  display: block; border: none; outline: none;
+}
+.cw-band { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; pointer-events: none; }
+.cfall {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 10px; text-align: center; font-size: 14px; font-family: var(--ff-h); line-height: 1.4;
+}
+
+/* ── SLIDER ── */
+.sl-wrap { display: flex; align-items: center; gap: 18px; padding: 10px 80px 10px; background: var(--bg); position: relative; z-index: 200; border-bottom: 1px solid rgba(201,168,76,.1); }
+.sl-lbl  { font-family: var(--ff-h); font-size: 11px; color: var(--gold-d); letter-spacing: 1.5px; white-space: nowrap; }
+.sl-btn  { cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: color .15s, background .15s; user-select: none; }
+.sl-btn:hover { color: var(--gold); background: rgba(201,168,76,.1); }
+
+input[type=range].slider {
+  flex: 1; -webkit-appearance: none; appearance: none; height: 3px;
+  background: linear-gradient(90deg, var(--gold) var(--p,0%), rgba(255,255,255,.1) var(--p,0%));
+  border-radius: 3px; outline: none; cursor: pointer;
+}
+input[type=range].slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold); border: 3px solid var(--bg);
+  box-shadow: 0 0 10px rgba(201,168,76,.65); cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+input[type=range].slider::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold); border: 3px solid var(--bg);
+  box-shadow: 0 0 10px rgba(201,168,76,.65); cursor: pointer;
+}
+input[type=range].slider:hover::-webkit-slider-thumb {
+  transform: scale(1.25); box-shadow: 0 0 22px rgba(201,168,76,.85);
+}
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <div id="ov-backdrop"></div>
+  <div id="ov-img">
+    <img id="ov-img-el" src="" alt="">
+    <div id="ov-fall"></div>
+  </div>
+  <div id="ov-info">
+    <div id="ov-title"></div>
+    <div id="ov-planet"></div>
+    <div id="ov-year"></div>
+    <div id="ov-rule"></div>
+    <div id="ov-blurb"></div>
+  </div>
+</div>
+
+<div class="page">
+  <header class="header">
+    <h1>THE COSMERE</h1>
+    <p>Shardworld Timeline · approximate in-universe chronology</p>
+  </header>
+  <nav class="legend" id="legend" aria-label="Planet filter"></nav>
+  <div class="sl-wrap">
+    <span class="sl-lbl sl-btn" id="btn-earlier" title="Jump to start">◀ EARLIER</span>
+    <input type="range" class="slider" id="slider" min="0" max="100" value="0" aria-label="Timeline position">
+    <span class="sl-lbl sl-btn" id="btn-later" title="Jump to end">LATER ▶</span>
+  </div>
+  <div class="tl-outer" id="outer">
+    <div class="tl-canvas" id="canvas"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ─────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────
+const BS = 'https://www.brandonsanderson.com/cdn/shop/files/';
+const WP = 'https://upload.wikimedia.org/wikipedia/en/';
+
+// Verified by fetching official source pages. null = no verified cover → styled card.
+const COVER_URL = {
+  'Elantris':              BS + 'Untitled_design_26.png',
+  'The Final Empire':      BS + '2.png',
+  'Well of Ascension':     BS + 'Untitled_design_18.png',
+  'Hero of Ages':          BS + 'Untitled_design_19.png',
+  'The Way of Kings':      WP + 'thumb/5/5d/TheWayOfKings.jpg/220px-TheWayOfKings.jpg',
+  'Words of Radiance':     WP + 'thumb/7/7b/Words_of_Radiance_cover.jpg/220px-Words_of_Radiance_cover.jpg',
+  'Oathbringer':           WP + 'thumb/a/a6/Oathbringer_book_cover.jpg/220px-Oathbringer_book_cover.jpg',
+  'Rhythm of War':         WP + 'thumb/5/5e/Rhythm_of_War_-_book_cover.jpg/220px-Rhythm_of_War_-_book_cover.jpg',
+  'Wind and Truth':        WP + '9/97/Wind_and_Truth_Book_Cover.jpg',
+  'Warbreaker':            WP + 'thumb/6/63/BrandonSandersonWarbreakerBookCover.jpg/220px-BrandonSandersonWarbreakerBookCover.jpg',
+  'Alloy of Law':          BS + 'Untitled_design_1.png',
+  'Shadows of Self':       BS + 'Untitled_design_22.png',
+  'Bands of Mourning':     BS + 'Untitled_design_23.png',
+  'Tress of the Emerald Sea':  BS + '3.png',
+  'Yumi & Nightmare Painter':  BS + 'Untitled_design_24.png',
+  'The Sunlit Man':            BS + 'Untitled_design_25.png',
+  'Isles of the Emberdark':    BS + 'grounded_book_images_eb8cef98-9df2-4923-8003-53d7ea09b823.png',
+};
+
+const PLANETS = {
+  yolen:     { label: 'Yolen',                color: '#c9a84c' },
+  taldain:   { label: 'Taldain',              color: '#7F77DD' },
+  sel:        { label: 'Sel',                  color: '#D4537E' },
+  scadrial1: { label: 'Scadrial — Era 1',     color: '#BA7517' },
+  nalthis:   { label: 'Nalthis',              color: '#639922' },
+  threnody:  { label: 'Threnody',             color: '#888780' },
+  roshar:    { label: 'Roshar',               color: '#378ADD' },
+  scadrial2: { label: 'Scadrial — Era 2',     color: '#EF9F27' },
+  lumar:     { label: 'Lumar (Tress)',         color: '#5DCAA5' },
+  komashi:   { label: 'Komashi (Yumi)',        color: '#F4C0D1' },
+  fots:      { label: 'First of the Sun',     color: '#993C1D' },
+  canticle:  { label: 'Canticle (Sunlit Man)',color: '#B5D4F4' },
+};
+
+// x positions scaled 50% larger (originals × 1.5, rounded to nearest 5)
+const BOOKS = [
+  { title: 'Dragonsteel',         planet: 'yolen',     x: 105,  above: true,  stemH: 135, year: 'Pre-Shattering · Year ~0',                   blurb: "Unpublished. Hoid's origin story. The Shattering of Adonalsium happens on Yolen.", upcoming: true },
+  { title: 'The Silence Divine',  planet: 'yolen',     x: 235,  above: false, stemH: 83,  year: 'Pre-Shattering · Year ~0',                   blurb: 'Unpublished novella set on Yolen. Explores its unique, separate magic system.', upcoming: true },
+  { title: 'White Sand',          planet: 'taldain',   x: 420,  above: true,  stemH: 120, year: '~500 PS · Earliest published Cosmere',        blurb: "Graphic novel trilogy. Sand mastery on a tidally locked world. Khriss's home planet." },
+  { title: 'Elantris',            planet: 'sel',       x: 608,  above: false, stemH: 98,  year: '~1000 PS · Year 0 Arelish Reckoning',         blurb: 'First published Cosmere novel. Aons and the Dor. A city of fallen Elantrians.' },
+  { title: 'Hope of Elantris',    planet: 'sel',       x: 720,  above: true,  stemH: 72,  year: '~1000 PS (concurrent with Elantris)',          blurb: "Short story. The climax of Elantris from Ashe the seon's POV." },
+  { title: "The Emperor's Soul",  planet: 'sel',       x: 833,  above: false, stemH: 83,  year: '~1000 PS · Sel, different region',             blurb: "Hugo Award winner. A Forger has 100 days to recreate an Emperor's soul." },
+  { title: 'Elantris Book 2',     planet: 'sel',       x: 945,  above: true,  stemH: 98,  year: '~1010 PS · Planned 2029',                      blurb: "Forthcoming. 10 years after Elantris, set in Fjorden. Kiin's children as POVs.", upcoming: true },
+  { title: 'Elantris Book 3',     planet: 'sel',       x: 1058, above: false, stemH: 78,  year: 'Planned 2030',                                  blurb: 'Forthcoming finale of the Elantris trilogy.', upcoming: true },
+  { title: 'The Eleventh Metal',  planet: 'scadrial1', x: 1245, above: true,  stemH: 78,  year: '~3200 PS · Before Final Empire',               blurb: 'Short story prequel. Follows young Kelsier training under a mysterious Allomancer.' },
+  { title: 'The Final Empire',    planet: 'scadrial1', x: 1358, above: false, stemH: 210, year: '~3242 PS · Year 1000 of the Final Empire',     blurb: 'Ash falls forever. The Lord Ruler reigns. Vin discovers she is a Mistborn.' },
+  { title: 'Secret History',      planet: 'scadrial1', x: 1470, above: true,  stemH: 93,  year: '~3242 PS (runs alongside Era 1)',               blurb: "Novella. Kelsier's journey in the Cognitive Realm. Read after Hero of Ages." },
+  { title: 'Well of Ascension',   planet: 'scadrial1', x: 1583, above: false, stemH: 87,  year: '~3243 PS · Year 1001 Final Empire',            blurb: 'After the Lord Ruler. Armies besiege Luthadel. Elend rises to lead.' },
+  { title: 'Hero of Ages',        planet: 'scadrial1', x: 1695, above: true,  stemH: 120, year: '~3244 PS · The Catacendre',                    blurb: 'The Catacendre reshapes Scadrial. Harmony born from Ruin and Preservation.' },
+  { title: 'Shadows for Silence', planet: 'threnody',  x: 1860, above: false, stemH: 93,  year: '~3500 PS · Pre-Stormlight era',                blurb: 'Shades haunt dark forests. An innkeeper hunts a dangerous bounty to save her family.' },
+  { title: 'Warbreaker',          planet: 'nalthis',   x: 1992, above: true,  stemH: 143, year: '~3500 PS · Concurrent with early Stormlight',  blurb: "BioChromatic Breath and the Returned gods. Vasher and Nightblood's origin on Nalthis." },
+  { title: 'The Way of Kings',    planet: 'roshar',    x: 2157, above: false, stemH: 233, year: '1174 SA (~3500 PS)',                            blurb: 'Kaladin, Shallan, Dalinar. The Knights Radiant must return.' },
+  { title: 'Words of Radiance',   planet: 'roshar',    x: 2277, above: true,  stemH: 102, year: '1174 SA',                                       blurb: 'The Everstorm is coming. Szeth hunts. The Knights Radiant return.' },
+  { title: 'Edgedancer',          planet: 'roshar',    x: 2375, above: false, stemH: 87,  year: '1174 SA · Between WoR & Oathbringer',           blurb: 'Novella. Lift slides through a doomed city while chasing Darkness.' },
+  { title: 'Oathbringer',         planet: 'roshar',    x: 2472, above: true,  stemH: 117, year: '1175 SA',                                       blurb: "Dalinar's dark past. The Everstorm merges realms. Battle of Thaylen City." },
+  { title: 'Dawnshard',           planet: 'roshar',    x: 2570, above: false, stemH: 78,  year: '1175 SA · Between Oath & RoW',                  blurb: 'Novella. Rysn and Lopen voyage to the forbidden isle of Aimia.' },
+  { title: 'Rhythm of War',       planet: 'roshar',    x: 2667, above: true,  stemH: 138, year: '1175 SA',                                       blurb: 'Fabrials. Navani bonds a spren. Urithiru is captured.' },
+  { title: 'Wind and Truth',      planet: 'roshar',    x: 2780, above: false, stemH: 117, year: '1175 SA',                                       blurb: "Szeth's arc. Battle for Shinovar. End of Stormlight Archive Arc 1." },
+  { title: 'Alloy of Law',        planet: 'scadrial2', x: 2948, above: true,  stemH: 87,  year: '~342 VE · ~3542 PS',                            blurb: '~300 years after Catacendre. Industrial Scadrial. Wax and Wayne debut.' },
+  { title: 'Allomancer Jak',      planet: 'scadrial2', x: 3045, above: false, stemH: 69,  year: '~342 VE',                                       blurb: 'Short story. Pulp-adventure tales of Allomancer Jak in the Roughs.' },
+  { title: 'Shadows of Self',     planet: 'scadrial2', x: 3150, above: true,  stemH: 102, year: '~342 VE',                                       blurb: 'A Kandra is secretly murdering people. Revolution threatens Elendel.' },
+  { title: 'Bands of Mourning',   planet: 'scadrial2', x: 3263, above: false, stemH: 78,  year: '~342 VE',                                       blurb: "The Lord Ruler's legendary bracers surface. Southern Scadrians revealed." },
+  { title: 'The Lost Metal',      planet: 'scadrial2', x: 3375, above: true,  stemH: 117, year: '~342 VE',                                       blurb: "Trell / Autonomy revealed. Wax and Wayne's finale. Cosmere connections explode." },
+  { title: 'Tress of the Emerald Sea', planet: 'lumar',    x: 3555, above: false, stemH: 102, year: 'Far future · ~5000+ PS',                   blurb: 'A girl sails deadly spore seas to rescue the boy she loves. Narrated by Hoid.' },
+  { title: 'Yumi & Nightmare Painter', planet: 'komashi',  x: 3675, above: true,  stemH: 123, year: 'Far future · ~5000+ PS',                   blurb: 'Two people sharing one body across worlds. Spirit and technology collide.' },
+  { title: 'Sixth of the Dusk',        planet: 'fots',     x: 3788, above: false, stemH: 93,  year: 'Far future · interplanetary travel era',   blurb: "A lone trapper finds outsiders have discovered his isolated world." },
+  { title: 'Isles of the Emberdark',   planet: 'fots',     x: 3900, above: true,  stemH: 108, year: 'Far future · after Sixth of the Dusk · 2025', blurb: 'Direct sequel. Dusk and Leilani navigate a First of the Sun changed by outsiders.' },
+  { title: 'The Sunlit Man',           planet: 'canticle', x: 4020, above: false, stemH: 135, year: 'Far future · latest chronologically',      blurb: "Nomad (Sigzil) flees across worlds. Most cosmere-heavy Secret Project." },
+];
+
+const ERAS = [
+  { x: 83,   label: 'Yolen · Pre-Shattering',      year: 'Year 0 (Shattering)' },
+  { x: 398,  label: 'Taldain · Earliest',           year: '~500 PS' },
+  { x: 585,  label: 'Sel (Elantris era)',            year: '~1000 PS' },
+  { x: 1230, label: 'Scadrial Era 1 · Mistborn',    year: '~3200–3250 PS' },
+  { x: 1838, label: 'Threnody / Nalthis',            year: '~3500 PS' },
+  { x: 2130, label: 'Roshar · Stormlight Arc 1',    year: '1174–1175 SA' },
+  { x: 2925, label: 'Scadrial Era 2',                year: '~342 VE' },
+  { x: 3525, label: 'Far Future · Secret Projects', year: '~5000+ PS' },
+];
+
+const TOTAL_W = 4260;
+const AXIS_Y  = 410;
+
+// ─────────────────────────────────────────────
+// LEGEND + FILTER + SCROLL-TO-PLANET
+// ─────────────────────────────────────────────
+const outer    = document.getElementById('outer');
+const legendEl = document.getElementById('legend');
+let activePlanet = null;
+
+// Compute average x per planet for centering
+const planetCenterX = {};
+
+// ─────────────────────────────────────────────
+// TRIM WHITESPACE / BACKGROUND PADDING FROM COVERS
+// Uses OffscreenCanvas to detect the actual book rectangle
+// and sets background-position/size to crop it out.
+// ─────────────────────────────────────────────
+
+/** 
+ * Given a loaded <img>, find the tight bounding box of non-background content
+ * and apply it via CSS background-image + background-position/size on the container.
+ * threshold: pixels within this luminance distance of the corner colour are "background".
+ */
+function trimCoverImage(img, container) {
+  try {
+    const w = img.naturalWidth, h = img.naturalHeight;
+    if (!w || !h) return;
+
+    const offscreen = new OffscreenCanvas(w, h);
+    const ctx = offscreen.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const data = ctx.getImageData(0, 0, w, h).data;
+
+    // Sample all 4 corners to find the background colour
+    function px(x, y) {
+      const i = (y * w + x) * 4;
+      return [data[i], data[i+1], data[i+2], data[i+3]];
+    }
+    const corners = [px(0,0), px(w-1,0), px(0,h-1), px(w-1,h-1)];
+
+    // Average the corners to get background colour estimate
+    let br = 0, bg = 0, bb = 0;
+    for (const [r,g,b] of corners) { br+=r; bg+=g; bb+=b; }
+    br = Math.round(br/4); bg = Math.round(bg/4); bb = Math.round(bb/4);
+
+    // Only trim if background is light-ish (luminance > 160)
+    // Dark backgrounds (real cover edges) should not be trimmed
+    const bgLum = 0.299*br + 0.587*bg + 0.114*bb;
+    if (bgLum < 160) return; // dark background = full-bleed cover, skip
+
+    const THRESH = 40;
+    function isBg(x, y) {
+      const [r,g,b,a] = px(x, y);
+      if (a < 20) return true;
+      return Math.sqrt((r-br)**2 + (g-bg)**2 + (b-bb)**2) < THRESH;
+    }
+
+    let top = 0, bot = h-1, lft = 0, rgt = w-1;
+
+    outer: for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++)
+        if (!isBg(x,y)) { top = y; break outer; }
+
+    outer: for (let y = h-1; y >= 0; y--)
+      for (let x = 0; x < w; x++)
+        if (!isBg(x,y)) { bot = y; break outer; }
+
+    outer: for (let x = 0; x < w; x++)
+      for (let y = top; y <= bot; y++)
+        if (!isBg(x,y)) { lft = x; break outer; }
+
+    outer: for (let x = w-1; x >= 0; x--)
+      for (let y = top; y <= bot; y++)
+        if (!isBg(x,y)) { rgt = x; break outer; }
+
+    const cropW = rgt - lft + 1, cropH = bot - top + 1;
+    const pad = Math.max(lft/w, top/h, (w-1-rgt)/w, (h-1-bot)/h);
+    if (pad < 0.04) return; // less than 4% padding — not worth trimming
+
+    // Apply trim: hide img, use background-image with correct pixel offsets
+    const scaleX = container.offsetWidth  / cropW;
+    const scaleY = container.offsetHeight / cropH;
+    img.style.cssText += ';opacity:0;position:absolute;pointer-events:none';
+    container.style.backgroundImage    = `url("${img.src}")`;
+    container.style.backgroundSize    = `${(w * scaleX).toFixed(1)}px ${(h * scaleY).toFixed(1)}px`;
+    container.style.backgroundPosition = `-${(lft * scaleX).toFixed(1)}px -${(top * scaleY).toFixed(1)}px`;
+    container.style.backgroundRepeat   = 'no-repeat';
+  } catch(e) {
+    // CORS or OffscreenCanvas not available — leave image as-is
+  }
+}
+
+for (const b of BOOKS) {
+  if (!planetCenterX[b.planet]) planetCenterX[b.planet] = [];
+  planetCenterX[b.planet].push(b.x);
+}
+for (const pid in planetCenterX) {
+  const xs = planetCenterX[pid];
+  planetCenterX[pid] = xs.reduce((a, v) => a + v, 0) / xs.length;
+}
+
+function scrollToPlanet(pid) {
+  const cx = planetCenterX[pid] ?? TOTAL_W / 2;
+  const targetScroll = cx - outer.clientWidth / 2;
+  outer.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
+}
+
+const allBtn = Object.assign(document.createElement('button'), {
+  className: 'leg-all', textContent: 'ALL WORLDS'
+});
+allBtn.addEventListener('click', () => setFilter(null));
+legendEl.appendChild(allBtn);
+
+const legItems = {};
+for (const [id, p] of Object.entries(PLANETS)) {
+  const el = document.createElement('button');
+  el.className = 'leg-item';
+  el.style.setProperty('--pc', p.color);
+  el.innerHTML = `<span class="leg-dot" style="background:${p.color}88"></span>${p.label}`;
+  el.addEventListener('click', () => {
+    const toggling = activePlanet === id;
+    setFilter(toggling ? null : id);
+    if (!toggling) scrollToPlanet(id);
+  });
+  legendEl.appendChild(el);
+  legItems[id] = el;
+}
+
+function setFilter(pid) {
+  activePlanet = pid;
+  allBtn.style.opacity = pid ? '0.45' : '1';
+  for (const [id, el] of Object.entries(legItems)) {
+    el.classList.toggle('active', id === pid);
+    el.classList.toggle('faded', !!pid && id !== pid);
+  }
+  document.querySelectorAll('.bk').forEach(el =>
+    el.classList.toggle('faded', !!pid && el.dataset.planet !== pid));
+  document.querySelectorAll('.adot').forEach(el =>
+    el.classList.toggle('faded', !!pid && el.dataset.planet !== pid));
+}
+
+// ─────────────────────────────────────────────
+// CANVAS
+// ─────────────────────────────────────────────
+const canvas = document.getElementById('canvas');
+canvas.style.width = TOTAL_W + 'px';
+canvas.insertAdjacentHTML('beforeend', '<div class="axis"></div>');
+
+for (const e of ERAS) {
+  canvas.insertAdjacentHTML('beforeend', `
+    <div class="tick"    style="left:${e.x}px"></div>
+    <div class="era-lbl" style="left:${e.x}px">${e.label}</div>
+    <div class="yr-mark" style="left:${e.x}px">${e.year}</div>`);
+}
+
+
+for (const b of BOOKS) {
+  const p   = PLANETS[b.planet];
+  const url = COVER_URL[b.title] ?? null;
+
+  // Dot
+  const dot = document.createElement('div');
+  dot.className = 'adot';
+  dot.style.cssText = `left:${b.x}px;background:${p.color}`;
+  dot.dataset.planet = b.planet;
+  canvas.appendChild(dot);
+
+  // Wrapper
+  const bk = document.createElement('div');
+  bk.className   = 'bk';
+  bk.dataset.planet = b.planet;
+  bk.style.left  = (b.x - 54) + 'px';  // half of 108px cover width
+
+  const stem = document.createElement('div');
+  stem.className = 'stem';
+  stem.style.cssText = `height:${b.stemH}px;background:${p.color}`;
+
+  const cw = document.createElement('div');
+  cw.className = 'cw';
+  cw.style.borderColor = p.color + '66';
+
+  if (url && !b.upcoming) {
+    const img = document.createElement('img');
+    img.crossOrigin = 'anonymous';
+    img.alt = b.title; img.loading = 'lazy';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
+    img.addEventListener('load', () => trimCoverImage(img, cw));
+    img.src = url;
+    img.addEventListener('error', function h() {
+      this.removeEventListener('error', h);
+      this.style.display = 'none';
+      cw.appendChild(fallback(b.title, p.color, false));
+    });
+    cw.appendChild(img);
+  } else {
+    cw.appendChild(fallback(b.title, p.color, !!b.upcoming));
+    if (b.upcoming) { cw.style.borderStyle = 'dashed'; cw.style.opacity = '0.6'; }
+  }
+
+  const band = document.createElement('div');
+  band.className = 'cw-band'; band.style.background = p.color;
+  cw.appendChild(band);
+
+  if (b.above) {
+    bk.style.top = (AXIS_Y - b.stemH - 162 - 6) + 'px';
+    bk.append(cw, stem);
+  } else {
+    bk.style.top = AXIS_Y + 'px';
+    bk.append(stem, cw);
+  }
+
+  // Store book data on the cover element for hit-testing
+  cw.dataset.bookIdx = String(BOOKS.indexOf(b));
+
+  canvas.appendChild(bk);
+}
+
+function fallback(title, color, upcoming) {
+  const d = document.createElement('div');
+  d.className = 'cfall'; d.style.color = color;
+  d.innerHTML = upcoming
+    ? `<div style="font-size:9px;opacity:.45;margin-bottom:5px;letter-spacing:1px">✦ FORTHCOMING</div><div>${title}</div>`
+    : `<div>${title}</div>`;
+  return d;
+}
+
+// ─────────────────────────────────────────────
+// OVERLAY  — pointer-events:none so it never blocks covers
+// Detection via document.mousemove + elementFromPoint
+// ─────────────────────────────────────────────
+const overlay   = document.getElementById('overlay');
+const ovImgWrap = document.getElementById('ov-img');
+const ovImgEl   = document.getElementById('ov-img-el');
+const ovFall    = document.getElementById('ov-fall');
+const ovTitle   = document.getElementById('ov-title');
+const ovPlanet  = document.getElementById('ov-planet');
+const ovYear    = document.getElementById('ov-year');
+const ovBlurb   = document.getElementById('ov-blurb');
+const backdrop  = document.getElementById('ov-backdrop');
+
+let currentBook = null;   // which book is currently shown
+let hideTimer   = null;
+
+// Backdrop click dismisses (backdrop has pointer-events:auto)
+backdrop.addEventListener('click', () => hideOverlay());
+
+// Token to cancel stale async image loads when switching books quickly
+let loadToken = 0;
+
+function resetImgState() {
+  // Kill any pending onload/onerror and clear the src so stale callbacks never fire
+  ovImgEl.onload  = null;
+  ovImgEl.onerror = null;
+  ovImgEl.src     = '';
+  // Clear trim CSS
+  ovImgWrap.style.backgroundImage    = '';
+  ovImgWrap.style.backgroundSize     = '';
+  ovImgWrap.style.backgroundPosition = '';
+  // Reset inline styles set by trimCoverImage
+  ovImgEl.style.opacity  = '1';
+  ovImgEl.style.position = 'relative';
+  ovImgEl.style.cssText  = '';
+}
+
+function showOverlay(b, p, url) {
+  if (currentBook === b && overlay.classList.contains('on')) return;
+  currentBook = b;
+  clearTimeout(hideTimer);
+
+  // Always fully reset image state first — prevents stale covers showing
+  resetImgState();
+
+  if (url && !b.upcoming) {
+    // Capture token so stale onload from previous book is ignored
+    const token = ++loadToken;
+    ovImgEl.style.display = 'block';
+    ovFall.style.display  = 'none';
+    ovImgEl.alt           = b.title;
+    ovImgEl.crossOrigin   = 'anonymous';
+    ovImgEl.onload  = () => { if (loadToken === token) trimCoverImage(ovImgEl, ovImgWrap); };
+    ovImgEl.onerror = () => {
+      if (loadToken !== token) return;
+      ovImgEl.style.display = 'none';
+      ovFall.style.display  = 'flex';
+      ovFall.style.color    = p.color;
+      ovFall.textContent    = b.title;
+    };
+    ovImgEl.src = url;
+  } else {
+    // No cover — hide image completely, show fallback card
+    ovImgEl.style.display = 'none';
+    ovFall.style.display  = 'flex';
+    ovFall.style.color    = p.color;
+    ovFall.innerHTML = b.upcoming
+      ? `<div style="font-size:12px;opacity:.5;margin-bottom:10px">✦ FORTHCOMING</div><div style="font-size:20px">${b.title}</div>`
+      : `<div style="font-size:18px">${b.title}</div>`;
+  }
+
+  ovImgWrap.style.borderColor = p.color + '99';
+  // ── Text always matches the book being hovered ──
+  ovTitle.textContent  = b.title;
+  ovPlanet.textContent = p.label;
+  ovPlanet.style.color = p.color;
+  ovYear.textContent   = b.year;
+  const words  = b.blurb.split(' ');
+  const chunks = [];
+  for (let i = 0; i < words.length; i += 6) chunks.push(words.slice(i, i + 6).join(' '));
+  ovBlurb.innerHTML = chunks.map((c, i) =>
+    `<span class="ov-line" style="animation-delay:${i * 55}ms">${c}</span>`).join('');
+  overlay.classList.add('on');
+}
+
+function hideOverlay() {
+  overlay.classList.remove('on');
+  currentBook = null;
+}
+
+// ── CURSOR TRACKING ──
+// Since overlay is pointer-events:none it never blocks the cursor.
+// We track cursor position and hit-test cover elements directly.
+document.addEventListener('mousemove', e => {
+  // Temporarily ensure overlay doesn't intercept — it shouldn't, but be safe
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el) return;
+
+  // Check if cursor is over a .cw element (cover card)
+  const cw = el.closest('.cw');
+  if (cw) {
+    const idx = parseInt(cw.dataset.bookIdx, 10);
+    if (!isNaN(idx)) {
+      const b = BOOKS[idx];
+      const p = PLANETS[b.planet];
+      const url = COVER_URL[b.title] ?? null;
+      clearTimeout(hideTimer);
+      showOverlay(b, p, url);
+    }
+    return;
+  }
+
+  // Cursor is NOT over any cover — hide after short delay
+  // (allows moving cursor smoothly without flicker)
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(hideOverlay, 80);
+});
+
+// ─────────────────────────────────────────────
+// DRAG + SLIDER
+// ─────────────────────────────────────────────
+const sliderEl  = document.getElementById('slider');
+let dragging = false, dragX0 = 0, scrollX0 = 0;
+
+outer.addEventListener('mousedown', e => {
+  dragging = true; dragX0 = e.pageX - outer.offsetLeft; scrollX0 = outer.scrollLeft;
+  outer.style.userSelect = 'none';
+});
+document.addEventListener('mouseup', () => { dragging = false; outer.style.userSelect = ''; });
+outer.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  e.preventDefault();
+  outer.scrollLeft = scrollX0 - (e.pageX - outer.offsetLeft - dragX0);
+  syncSlider();
+});
+
+let sliderDriving = false;  // true while user is moving the slider thumb
+let rafPending    = false;  // rAF already queued for scroll→slider sync
+
+function syncSlider() {
+  // Throttle via requestAnimationFrame so we update at most once per paint
+  if (rafPending) return;
+  rafPending = true;
+  requestAnimationFrame(() => {
+    rafPending = false;
+    if (sliderDriving) return; // slider is driving scroll, don't fight it
+    const max = outer.scrollWidth - outer.clientWidth;
+    const pct = max > 0 ? (outer.scrollLeft / max) * 100 : 0;
+    sliderEl.value = String(pct);
+    sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
+  });
+}
+
+sliderEl.addEventListener('mousedown', () => { sliderDriving = true; });
+sliderEl.addEventListener('touchstart', () => { sliderDriving = true; }, { passive: true });
+document.addEventListener('mouseup',   () => { sliderDriving = false; });
+document.addEventListener('touchend',  () => { sliderDriving = false; });
+
+sliderEl.addEventListener('input', () => {
+  const max = outer.scrollWidth - outer.clientWidth;
+  const pct = parseFloat(sliderEl.value);
+  outer.scrollLeft = (pct / 100) * max;
+  sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
+});
+
+outer.addEventListener('scroll', syncSlider, { passive: true });
+syncSlider();
+
+// EARLIER / LATER jump buttons
+document.getElementById('btn-earlier').addEventListener('click', () => {
+  outer.scrollTo({ left: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-later').addEventListener('click', () => {
+  outer.scrollTo({ left: outer.scrollWidth, behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
