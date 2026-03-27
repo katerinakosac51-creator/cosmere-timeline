@@ -228,6 +228,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 /* ── LANGUAGE SELECTOR ── */
 .lang-selector {
   position: absolute; top: 12px; right: 24px; z-index: 300;
+  display: flex; gap: 6px;
 }
 .lang-btn {
   font-family: var(--ff-h); font-size: 11px; letter-spacing: .8px;
@@ -236,6 +237,9 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   background: transparent;
   transition: all .2s; user-select: none;
   outline: none;
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
 }
 .lang-btn:hover { color: var(--gold); border-color: var(--gold); }
 .lang-btn.active { 
@@ -309,8 +313,8 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   #ov-blurb  { font-size: 14px; line-height: 1.6; }
 
   /* Language selector */
-  .lang-selector { top: 8px; right: 12px; }
-  .lang-btn { font-size: 9px; padding: 5px 8px; }
+  .lang-selector { top: 8px; right: 12px; gap: 4px; }
+  .lang-btn { font-size: 9px; padding: 5px 8px; min-width: auto; }
 }
 
 /* Tap highlight suppression (iOS) */
@@ -540,6 +544,7 @@ function applyTranslations() {
 
 function updateLanguageSelector() {
   const selector = document.getElementById('lang-selector');
+  if (!selector) return;
   selector.innerHTML = '';
   Object.keys(TRANSLATIONS).forEach(lang => {
     const btn = document.createElement('button');
