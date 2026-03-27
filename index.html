@@ -431,7 +431,10 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 <div class="page">
   <header class="header">
     <h1>THE COSMERE</h1>
-    <div class="lang-selector" id="lang-selector"></div>
+    <div class="lang-selector" id="lang-selector">
+      <button class="lang-btn active" data-lang="en" title="English">EN</button>
+      <button class="lang-btn" data-lang="uk" title="Українська">UK</button>
+    </div>
     <p>Shardworld Timeline · approximate in-universe chronology</p>
   </header>
   <nav class="legend" id="legend" aria-label="Planet filter"></nav>
@@ -557,22 +560,24 @@ function applyTranslations() {
 }
 
 function updateLanguageSelector() {
-  const selector = document.getElementById('lang-selector');
-  if (!selector) {
-    console.warn('Language selector element not found');
-    return;
-  }
-  selector.innerHTML = '';
-  const langs = Object.keys(TRANSLATIONS);
-  console.log('Creating language buttons for:', langs);
-  langs.forEach(lang => {
-    const btn = document.createElement('button');
-    btn.className = 'lang-btn' + (lang === currentLang ? ' active' : '');
-    btn.textContent = lang.toUpperCase();
-    btn.setAttribute('title', 'Switch to ' + lang.toUpperCase());
-    btn.addEventListener('click', () => setLanguage(lang));
-    selector.appendChild(btn);
-    console.log('Created button for:', lang, 'Active?', lang === currentLang);
+  const buttons = document.querySelectorAll('.lang-btn');
+  console.log('Found lang buttons:', buttons.length);
+  buttons.forEach(btn => {
+    const lang = btn.getAttribute('data-lang');
+    if (lang === currentLang) {
+      btn.classList.add('active');
+      console.log('Activated button for:', lang);
+    } else {
+      btn.classList.remove('active');
+    }
+    // Remove old listeners by cloning
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    // Add new listener
+    newBtn.addEventListener('click', () => {
+      console.log('Language button clicked:', lang);
+      setLanguage(lang);
+    });
   });
 }
 
