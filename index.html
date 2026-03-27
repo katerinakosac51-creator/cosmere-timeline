@@ -127,12 +127,12 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
   padding: 8px 80px 0;
   cursor: grab;
   scrollbar-width: none;
-  scroll-behavior: smooth;
 }
 .tl-outer::-webkit-scrollbar { display: none; }
 .tl-outer:active { cursor: grabbing; }
 
 .tl-canvas { position: relative; height: 860px; overflow: visible; margin-top: -99px; }
+.canvas-pad { display: inline-block; height: 1px; flex-shrink: 0; pointer-events: none; }
 
 /* ── AXIS ── */
 .axis {
@@ -185,7 +185,7 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
   width: 108px; height: 162px; border-radius: 4px;
   border: none;
   background: var(--surface); position: relative; flex-shrink: 0; overflow: hidden;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .cw img {
   width: 100%; height: 100%;
@@ -211,18 +211,18 @@ input[type=range].slider {
   border-radius: 3px; outline: none; cursor: pointer;
 }
 input[type=range].slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
-  background: var(--gold); border: 3px solid var(--bg);
-  box-shadow: 0 0 10px rgba(201,168,76,.65); cursor: pointer;
+  -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold); border: 2px solid var(--bg);
+  box-shadow: 0 0 8px rgba(201,168,76,.6); cursor: pointer;
   transition: transform .15s, box-shadow .15s;
 }
 input[type=range].slider::-moz-range-thumb {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: var(--gold); border: 3px solid var(--bg);
-  box-shadow: 0 0 10px rgba(201,168,76,.65); cursor: pointer;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold); border: 2px solid var(--bg);
+  box-shadow: 0 0 8px rgba(201,168,76,.6); cursor: pointer;
 }
 input[type=range].slider:hover::-webkit-slider-thumb {
-  transform: scale(1.25); box-shadow: 0 0 22px rgba(201,168,76,.85);
+  transform: scale(1.4); box-shadow: 0 0 16px rgba(201,168,76,.85);
 }
 
 /* ═══════════════════════════════════════
@@ -259,8 +259,8 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   /* Slider */
   .sl-wrap { padding: 8px 14px; gap: 10px; }
   .sl-lbl  { font-size: 9px; letter-spacing: 1px; }
-  input[type=range].slider::-webkit-slider-thumb { width: 28px; height: 28px; }
-  input[type=range].slider::-moz-range-thumb     { width: 28px; height: 28px; }
+  input[type=range].slider::-webkit-slider-thumb { width: 22px; height: 22px; }
+  input[type=range].slider::-moz-range-thumb     { width: 22px; height: 22px; }
 
   /* Timeline outer — full width, tighter padding */
   .tl-outer { padding: 8px 20px 0; -webkit-overflow-scrolling: touch; }
@@ -292,6 +292,82 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 
 /* Tap highlight suppression (iOS) */
 * { -webkit-tap-highlight-color: transparent; }
+
+/* ── SLIDER PROJECTION LINE ── */
+/* Fixed vertical gold line that aligns with the slider thumb's canvas position */
+#proj-line {
+  position: absolute;       /* inside .tl-canvas */
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(201,168,76,0) 15%,
+    rgba(201,168,76,.55) 40%,
+    rgba(201,168,76,.9) calc(var(--ay) - 2px),
+    #c9a84c var(--ay),
+    rgba(201,168,76,.4) calc(var(--ay) + 4px),
+    rgba(201,168,76,0) 75%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 50;
+  --ay: 45%;   /* axis position as % of canvas height, set by JS */
+}
+
+/* Glowing diamond at the axis intercept */
+#proj-line::after {
+  content: '';
+  position: absolute;
+  top: var(--ay);
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 10px; height: 10px;
+  background: var(--gold);
+  box-shadow: 0 0 10px 3px rgba(201,168,76,.7);
+  transition: top .05s linear;
+}
+
+/* Era labels and year marks: smooth scale transition */
+.era-lbl, .yr-mark {
+  transition: transform .2s ease, color .2s ease, text-shadow .2s ease;
+  transform-origin: center center;
+}
+.era-lbl.near {
+  transform: translateX(-50%) scale(1.45);
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(201,168,76,.6);
+}
+.yr-mark.near {
+  transform: translateX(-50%) scale(1.5);
+  color: rgba(201,168,76,1);
+  text-shadow: 0 0 10px rgba(201,168,76,.7);
+}
+
+/* Tick also lights up */
+.tick.near {
+  background: rgba(201,168,76,.7);
+  box-shadow: 0 0 6px rgba(201,168,76,.5);
+}
+
+/* Book cover "popping" when crossed by the projection line */
+.bk.near .cw {
+  transform: scale(1.12);
+  box-shadow: 0 0 22px 4px rgba(201,168,76,.35), 0 8px 32px rgba(0,0,0,.7);
+  border-color: rgba(201,168,76,.5) !important;
+  z-index: 90;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+/* Keep hover scale dominant over near scale */
+.bk.near .cw:hover {
+  transform: scale(1.2);
+}
+/* Stem glows */
+.bk.near .stem {
+  opacity: .75;
+  filter: drop-shadow(0 0 4px currentColor);
+  transition: opacity .25s ease, filter .25s ease;
+}
 </style>
 </head>
 <body>
@@ -323,7 +399,9 @@ input[type=range].slider:hover::-webkit-slider-thumb {
     <span class="sl-lbl sl-btn" id="btn-later" title="Jump to end">LATER ▶</span>
   </div>
   <div class="tl-outer" id="outer">
-    <div class="tl-canvas" id="canvas"></div>
+    <div class="tl-canvas" id="canvas">
+      <div id="proj-line"></div>
+    </div>
   </div>
 </div>
 
@@ -523,8 +601,10 @@ for (const pid in planetCenterX) {
 
 function scrollToPlanet(pid) {
   const cx = planetCenterX[pid] ?? TOTAL_W / 2;
-  const targetScroll = cx - outer.clientWidth / 2;
-  outer.scrollTo({ left: Math.max(0, targetScroll), behavior: 'smooth' });
+  // With side padding: to center canvas-x=cx, set scrollLeft=cx
+  const targetScroll = cx;
+  sliderTarget = Math.max(0, Math.min(targetScroll, outer.scrollWidth - outer.clientWidth));
+  scheduleFrame();
 }
 
 const allBtn = Object.assign(document.createElement('button'), {
@@ -565,6 +645,15 @@ function setFilter(pid) {
 // CANVAS
 // ─────────────────────────────────────────────
 const canvas = document.getElementById('canvas');
+// Dynamic side padding so first/last books can reach the projection line center
+function applyCanvasPadding() {
+  const half = Math.round(outer.clientWidth / 2);
+  outer.style.paddingLeft  = half + 'px';
+  outer.style.paddingRight = half + 'px';
+}
+applyCanvasPadding();
+window.addEventListener('resize', applyCanvasPadding);
+
 canvas.style.width = TOTAL_W + 'px';
 canvas.insertAdjacentHTML('beforeend', '<div class="axis"></div>');
 
@@ -591,6 +680,7 @@ for (const b of BOOKS) {
   const bk = document.createElement('div');
   bk.className   = 'bk';
   bk.dataset.planet = b.planet;
+  bk.dataset.x = b.x;  // canvas-x center for projection hit-test
   bk.style.left  = (b.x - 54) + 'px';  // half of 108px cover width
 
   const stem = document.createElement('div');
@@ -772,12 +862,19 @@ document.addEventListener('mousemove', e => {
 });
 
 // ─────────────────────────────────────────────
-// DRAG + SLIDER
+// DRAG + SLIDER  —  unified rAF render loop
 // ─────────────────────────────────────────────
-const sliderEl  = document.getElementById('slider');
-let dragging = false, dragX0 = 0, scrollX0 = 0;
+const sliderEl = document.getElementById('slider');
 
-// ── Mouse drag ──
+// ── State ──
+let dragging      = false, dragX0 = 0, scrollX0 = 0;
+let touchX0       = 0,     touchScroll0 = 0, touchDragging = false;
+let sliderDriving = false; // slider is actively being dragged by user
+let rafPending    = false; // rAF frame already scheduled
+// Target scroll set by slider; -1 = not driven by slider this frame
+let sliderTarget  = -1;
+
+// ── Mouse drag on timeline ──
 outer.addEventListener('mousedown', e => {
   dragging = true; dragX0 = e.pageX - outer.offsetLeft; scrollX0 = outer.scrollLeft;
   outer.style.userSelect = 'none';
@@ -787,63 +884,151 @@ outer.addEventListener('mousemove', e => {
   if (!dragging) return;
   e.preventDefault();
   outer.scrollLeft = scrollX0 - (e.pageX - outer.offsetLeft - dragX0);
-  syncSlider();
+  scheduleFrame();
 });
 
-// ── Touch drag (iOS/Android) ──
-let touchX0 = 0, touchScroll0 = 0, touchDragging = false;
+// ── Touch drag on timeline ──
 outer.addEventListener('touchstart', e => {
   if (e.touches.length !== 1) return;
-  touchX0 = e.touches[0].pageX;
-  touchScroll0 = outer.scrollLeft;
-  touchDragging = true;
+  touchX0 = e.touches[0].pageX; touchScroll0 = outer.scrollLeft; touchDragging = true;
 }, { passive: true });
 outer.addEventListener('touchmove', e => {
   if (!touchDragging || e.touches.length !== 1) return;
-  const dx = touchX0 - e.touches[0].pageX;
-  outer.scrollLeft = touchScroll0 + dx;
-  syncSlider();
+  outer.scrollLeft = touchScroll0 + (touchX0 - e.touches[0].pageX);
+  scheduleFrame();
 }, { passive: true });
 outer.addEventListener('touchend', () => { touchDragging = false; });
 
-let sliderDriving = false;  // true while user is moving the slider thumb
-let rafPending    = false;  // rAF already queued for scroll→slider sync
-
-function syncSlider() {
-  // Throttle via requestAnimationFrame so we update at most once per paint
-  if (rafPending) return;
-  rafPending = true;
-  requestAnimationFrame(() => {
-    rafPending = false;
-    if (sliderDriving) return; // slider is driving scroll, don't fight it
-    const max = outer.scrollWidth - outer.clientWidth;
-    const pct = max > 0 ? (outer.scrollLeft / max) * 100 : 0;
-    sliderEl.value = String(pct);
-    sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
-  });
-}
-
-sliderEl.addEventListener('mousedown', () => { sliderDriving = true; });
+// ── Slider thumb drag guards ──
+sliderEl.addEventListener('mousedown',  () => { sliderDriving = true; });
 sliderEl.addEventListener('touchstart', () => { sliderDriving = true; }, { passive: true });
 document.addEventListener('mouseup',   () => { sliderDriving = false; });
 document.addEventListener('touchend',  () => { sliderDriving = false; });
 
+// ── Slider input → scroll ──
 sliderEl.addEventListener('input', () => {
+  // Direct drag: instant scroll + instant line update — no lerp, no lag
   const max = outer.scrollWidth - outer.clientWidth;
   const pct = parseFloat(sliderEl.value);
   outer.scrollLeft = (pct / 100) * max;
   sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
+  updateProjection();   // synchronous — line moves with thumb, same frame
 });
 
-outer.addEventListener('scroll', syncSlider, { passive: true });
-syncSlider();
+const projLine    = document.getElementById('proj-line');
+const eraLabels   = document.querySelectorAll('.era-lbl');
+const yrMarks     = document.querySelectorAll('.yr-mark');
+const ticks       = document.querySelectorAll('.tick');
+const SNAP_PX     = 120;  // px radius around line within which eras "pop"
+const CANVAS_H    = 860;
+const AXIS_TOP    = 410;  // px from canvas top
+// Set axis % variable once
+projLine.style.setProperty('--ay', ((AXIS_TOP / CANVAS_H) * 100).toFixed(2) + '%');
+
+// Each era element stores its canvas-x for hit-testing
+eraLabels.forEach((el, i) => el.dataset.x = ERAS[i].x);
+yrMarks.forEach((el,  i) => el.dataset.x = ERAS[i].x);
+ticks.forEach((el,    i) => el.dataset.x = ERAS[i].x);
+
+// Book elements for projection hit-testing (populated after canvas build)
+const bookEls = () => document.querySelectorAll('.bk');
+// Tighter snap for books — exactly the line crossing the cover width (54px each side)
+const BOOK_SNAP = 60;  // half cover width = 54px, give 6px grace
+
+function updateProjection() {
+  // Canvas-x that aligns with the center of the viewport
+  // With dynamic side padding = clientWidth/2, canvas x=0 aligns to screen center at scrollLeft=0
+  // So canvas-x under the screen center = scrollLeft exactly
+  const lineX = outer.scrollLeft;
+  projLine.style.left = lineX + 'px';
+
+  // Highlight eras within SNAP_PX
+  eraLabels.forEach(el => {
+    el.classList.toggle('near', Math.abs(Number(el.dataset.x) - lineX) < SNAP_PX);
+  });
+  yrMarks.forEach(el => {
+    el.classList.toggle('near', Math.abs(Number(el.dataset.x) - lineX) < SNAP_PX);
+  });
+  ticks.forEach(el => {
+    el.classList.toggle('near', Math.abs(Number(el.dataset.x) - lineX) < SNAP_PX);
+  });
+
+  // Highlight books whose center x is crossed by the line
+  bookEls().forEach(bk => {
+    if (bk.classList.contains('faded')) {
+      bk.classList.remove('near');
+      return;
+    }
+    const dist = Math.abs(Number(bk.dataset.x) - lineX);
+    bk.classList.toggle('near', dist < BOOK_SNAP);
+  });
+}
+
+// ── Unified render frame ──
+// One rAF handles everything: apply slider target → read scrollLeft → update UI
+// ── Smooth lerp scroll target ──
+// sliderTarget: where we want to scroll to (-1 = not active)
+// lerpActive:   true while we're animating toward sliderTarget
+let lerpActive = false;
+const LERP = 0.18; // fraction to close each frame — higher = snappier, lower = smoother
+
+function scheduleFrame() {
+  if (rafPending) return;
+  rafPending = true;
+  requestAnimationFrame(renderFrame);
+}
+
+function renderFrame() {
+  rafPending = false;
+
+  // Programmatic lerp (planet filter, EARLIER/LATER) — smooth ease-out
+  if (sliderTarget >= 0) {
+    const dist = sliderTarget - outer.scrollLeft;
+    if (Math.abs(dist) < 0.5) {
+      outer.scrollLeft = sliderTarget;
+      sliderTarget = -1;
+      lerpActive = false;
+    } else {
+      outer.scrollLeft += dist * LERP;
+      lerpActive = true;
+      rafPending = true;
+      requestAnimationFrame(renderFrame);
+    }
+  } else {
+    lerpActive = false;
+  }
+
+  const max    = outer.scrollWidth - outer.clientWidth;
+  const scroll = outer.scrollLeft;
+  const pct    = max > 0 ? (scroll / max) * 100 : 0;
+
+  // Sync slider value to scroll (not when user is dragging thumb — thumb leads)
+  if (!sliderDriving) {
+    sliderEl.value = String(pct);
+    sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
+  }
+  // When slider IS driving: --p is already set directly in the input handler
+
+  // Projection line — always reads live scrollLeft, zero lag
+  updateProjection();
+}
+
+// Native scroll → sync slider (skip during programmatic lerp)
+outer.addEventListener('scroll', () => {
+  if (lerpActive) return;
+  scheduleFrame();
+}, { passive: true });
+
+renderFrame();
 
 // EARLIER / LATER jump buttons
 document.getElementById('btn-earlier').addEventListener('click', () => {
-  outer.scrollTo({ left: 0, behavior: 'smooth' });
+  sliderTarget = 0;
+  scheduleFrame();
 });
 document.getElementById('btn-later').addEventListener('click', () => {
-  outer.scrollTo({ left: outer.scrollWidth, behavior: 'smooth' });
+  sliderTarget = outer.scrollWidth - outer.clientWidth;
+  scheduleFrame();
 });
 </script>
 </body>
