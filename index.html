@@ -878,6 +878,8 @@ let sliderTarget  = -1;
 outer.addEventListener('mousedown', e => {
   dragging = true; dragX0 = e.pageX - outer.offsetLeft; scrollX0 = outer.scrollLeft;
   outer.style.userSelect = 'none';
+  sliderTarget = -1;  // Cancel any active lerp animation
+  lerpActive = false;
 });
 document.addEventListener('mouseup', () => { dragging = false; outer.style.userSelect = ''; });
 outer.addEventListener('mousemove', e => {
@@ -891,6 +893,8 @@ outer.addEventListener('mousemove', e => {
 outer.addEventListener('touchstart', e => {
   if (e.touches.length !== 1) return;
   touchX0 = e.touches[0].pageX; touchScroll0 = outer.scrollLeft; touchDragging = true;
+  sliderTarget = -1;  // Cancel any active lerp animation
+  lerpActive = false;
 }, { passive: true });
 outer.addEventListener('touchmove', e => {
   if (!touchDragging || e.touches.length !== 1) return;
