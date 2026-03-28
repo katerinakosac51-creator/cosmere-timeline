@@ -67,9 +67,9 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
   transition: opacity .25s .08s, transform .25s .08s;
 }
 #overlay.on #ov-info { opacity: 1; transform: translateX(0); }
-#ov-title  { font-family: var(--ff-h); font-size: 28px; color: var(--gold); margin-bottom: 8px; line-height: 1.2; }
-#ov-original { font-size: 13px; color: rgba(212,207,196,.82); font-style: italic; margin-bottom: 10px; line-height: 1.35; }
-#ov-planet { font-size: 15px; margin-bottom: 4px; letter-spacing: .5px; }
+#ov-title  { font-family: var(--ff-h); font-size: 35px; color: var(--gold); margin-bottom: 8px; line-height: 1.2; }
+#ov-original { font-size: 20px; color: rgba(212,207,196,.82); font-style: italic; margin-bottom: 10px; line-height: 1.35; }
+#ov-planet { font-size: 20px; margin-bottom: 4px; letter-spacing: .5px; }
 #ov-year   { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 20px; }
 #ov-rule   { width: 48px; height: 1px; background: var(--gold-d); margin-bottom: 20px; }
 #ov-blurb  { font-size: 18px; line-height: 1.8; }
@@ -360,9 +360,9 @@ input[type=range].slider:hover::-webkit-slider-thumb {
     max-width: 100%;
     text-align: center;
   }
-  #ov-title  { font-size: 20px; }
-  #ov-original { font-size: 11px; margin-bottom: 8px; }
-  #ov-planet { font-size: 13px; }
+  #ov-title  { font-size: 25px; }
+  #ov-original { font-size: 17px; margin-bottom: 8px; }
+  #ov-planet { font-size: 17px; }
   #ov-year   { font-size: 11px; margin-bottom: 12px; }
   #ov-rule   { margin: 0 auto 12px; }
   #ov-blurb  { font-size: 14px; line-height: 1.6; }
@@ -858,20 +858,23 @@ function updateLanguageSelector() {
 
 // Verified by fetching official source pages. null = no verified cover → styled card.
 const COVER_URL = {
-  'Elantris':              BS + 'Untitled_design_26.png',
-  'The Final Empire':      BS + '2.png',
-  'Well of Ascension':     BS + 'Untitled_design_18.png',
-  'Hero of Ages':          BS + 'Untitled_design_19.png',
-  'The Way of Kings':      WP + 'thumb/5/5d/TheWayOfKings.jpg/220px-TheWayOfKings.jpg',
-  'Words of Radiance':     WP + 'thumb/7/7b/Words_of_Radiance_cover.jpg/220px-Words_of_Radiance_cover.jpg',
-  'Oathbringer':           WP + 'thumb/a/a6/Oathbringer_book_cover.jpg/220px-Oathbringer_book_cover.jpg',
-  'Rhythm of War':         WP + 'thumb/5/5e/Rhythm_of_War_-_book_cover.jpg/220px-Rhythm_of_War_-_book_cover.jpg',
-  'Wind and Truth':        WP + '9/97/Wind_and_Truth_Book_Cover.jpg',
+  'Elantris':              'https://i.mbooks.com.ua/media/books/161c2c84-8a17-4303-ac2e-e5abf60d51a0/covers/None/7401d02b18ff45898bd4e563a3ac97c9.jpeg',
+  'The Final Empire':      'https://i.mbooks.com.ua/media/books/2af81b24-c976-4b86-a9ac-b3bec57d9b1c/covers/None/0b850cd7b0fc45faa5f15921cf0e947d.jpeg',
+  'Well of Ascension':     'https://i.mbooks.com.ua/media/books/d45f4c0d-ecf9-427d-99d3-60d4e2a7df24/covers/None/2cbf8aaa7dda4ec380ddd64a10410cdd.jpeg',
+  'Hero of Ages':          'https://i.mbooks.com.ua/media/books/aaccbe63-7236-49e2-941b-4376b7df2f94/covers/None/3b627d477e8b4792b962a44420e2c733.jpeg',
+  'Secret History':        'https://i.mbooks.com.ua/media/books/2f52b041-cbd8-42e2-853c-0d32193fa7c8/covers/None/ebecb515590a4aab98c2544cd2f44bdf.jpeg',
+  'The Way of Kings':      'https://i.mbooks.com.ua/media/books/00a5a802-6364-47e1-ba6e-3079e9c15b73/covers/None/b621c81cfb3e4f32a388021f86c25823.jpeg',
+  'Words of Radiance':     'https://i.mbooks.com.ua/media/books/4207e7a1-1202-47ce-b1b8-ddf1629673bd/covers/None/91b148cfbe1b4929b6fb37dab072c660.jpeg',
+  'Edgedancer':            'https://i.mbooks.com.ua/media/books/fb4e5e4d-94bc-41bd-8151-955ab423a9e9/covers/None/e45d6ba960f2441aab2506201a39048e.jpeg',
+  'Oathbringer':           'https://i.mbooks.com.ua/media/books/0cdf0e50-c374-4bac-914b-22d3bc6f79fe/covers/None/daab0512f8fd46c8ad2373d8d5175e49.jpeg',
+  'Rhythm of War':         'https://i.mbooks.com.ua/media/books/4b8d9ee1-ee46-42df-9334-051d4bcc6503/covers/None/912341de4182447b9fdd3b1029a35160.jpeg',
+  'Wind and Truth':        'https://i.mbooks.com.ua/media/books/9f4bba51-264e-40c8-8f60-2794dfdfc912/covers/None/261e2a4592be418ea0afc5e594e84085.jpeg',
   'Warbreaker':            WP + 'thumb/6/63/BrandonSandersonWarbreakerBookCover.jpg/220px-BrandonSandersonWarbreakerBookCover.jpg',
-  'Alloy of Law':          BS + 'Untitled_design_1.png',
-  'Shadows of Self':       BS + 'Untitled_design_22.png',
-  'Bands of Mourning':     BS + 'Untitled_design_23.png',
-  'Tress of the Emerald Sea':  BS + '3.png',
+  'Alloy of Law':          'https://i.mbooks.com.ua/media/books/65c43cbd-efe7-41e5-ac3d-c1a0d6acbd5c/covers/None/e77ab671efbd4ab682c2adda1fc87454.jpeg',
+  'Shadows of Self':       'https://i.mbooks.com.ua/media/books/8a6ca8ed-00ab-4d37-82c1-d83ecbab97b2/covers/None/985cbfd322964b87baeb047c2a345086.jpeg',
+  'Bands of Mourning':     'https://i.mbooks.com.ua/media/books/05e55f8c-f920-4b8b-977a-0fa6dc275fc2/covers/None/c1fede16a3d8494fa9e5ee75984dc9df.jpeg',
+  'The Lost Metal':        'https://i.mbooks.com.ua/media/books/50f8d80c-8cd8-4025-adf3-c2649079d10d/covers/None/56286f95e3bf4176973ac7a0c39409d6.jpeg',
+  'Tress of the Emerald Sea':  'https://i.mbooks.com.ua/media/books/29b2940c-45ab-4fca-98cb-2f779b9a82e7/covers/None/809b3429c9c8458b98d4a021db9f4357.jpeg',
   'Yumi & Nightmare Painter':  BS + 'Untitled_design_24.png',
   'The Sunlit Man':            BS + 'Untitled_design_25.png',
   'Isles of the Emberdark':    BS + 'grounded_book_images_eb8cef98-9df2-4923-8003-53d7ea09b823.png',
@@ -883,6 +886,11 @@ const COVER_URL_UK = {
   'Oathbringer':           'https://i.mbooks.com.ua/media/books/ebd16617-1c8d-423f-8b7a-f9f23969d39f/covers/None/1c20ac6a28bd450f891629b43dfb15fe.jpeg',
   'Rhythm of War':         'https://i.mbooks.com.ua/media/books/d9060b87-8b62-42e8-b584-b0a4700b23c0/covers/None/c450b095ca8e4cac903307bf39b9cb35.jpeg',
   'Wind and Truth':        'https://i.mbooks.com.ua/media/books/3e55792d-00ac-417b-a981-6065c045f6e8/covers/None/9a110307399f4f78a810bd2f5645f7bf.jpeg',
+  'Warbreaker':            'https://i.mbooks.com.ua/media/books/e120a44c-03a4-4053-8a1b-1bd071f14b81/covers/None/65f29b4efe924f89bb7f195c39e27e63.jpeg',
+};
+
+const LOCALIZED_COVER_URLS = {
+  uk: COVER_URL_UK,
 };
 
 const BOOK_TITLE_EN = {
@@ -948,10 +956,16 @@ function getOriginalBookTitle(titleKey) {
   return BOOK_TITLE_EN[titleKey] || t(titleKey);
 }
 
+function getLocalizedBookCoverUrl(book, lang = currentLang) {
+  const canonicalTitle = getCanonicalBookTitle(book.titleKey);
+  return LOCALIZED_COVER_URLS[lang]?.[canonicalTitle] ?? null;
+}
+
 function getBookCoverUrl(book) {
   const canonicalTitle = getCanonicalBookTitle(book.titleKey);
-  if (currentLang === 'uk' && COVER_URL_UK[canonicalTitle]) {
-    return COVER_URL_UK[canonicalTitle];
+  const localizedUrl = getLocalizedBookCoverUrl(book);
+  if (localizedUrl) {
+    return localizedUrl;
   }
   return COVER_URL[canonicalTitle] ?? null;
 }
@@ -1152,9 +1166,11 @@ function refreshBookCovers() {
 
     if (existingImg) {
       existingImg.alt = t(book.titleKey);
+      existingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
       if (existingImg.src !== url) {
-        existingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
         existingImg.src = url;
+      } else {
+        trimCoverImage(existingImg, cw);
       }
     } else {
       const img = createCoverImage(book, cw);
@@ -1515,16 +1531,26 @@ sliderEl.addEventListener('touchstart', () => { sliderDriving = true; }, { passi
 document.addEventListener('mouseup',   () => { sliderDriving = false; });
 document.addEventListener('touchend',  () => { sliderDriving = false; });
 
-function updateSliderThumbState(pct) {
-  const phase = Math.max(0, Math.min(1, pct / 12));
-  const moonX = 18 + (phase * 24);
-  const coronaAlpha = 0.26 + (phase * 0.18);
+function updateSliderThumbState() {
+  const loopMs = 2600; // full left→right sweep duration
+  const t = performance.now();
+  const phase = (t % loopMs) / loopMs; // 0..1 repeating
+  const moonX = 14 + (phase * 72);     // left edge to right edge
+  // Fade in/out so restart at left is visually seamless
+  const eclipseStrength = Math.pow(Math.sin(Math.PI * phase), 0.9);
+  const coronaAlpha = 0.26 + (eclipseStrength * 0.18);
 
-  sliderEl.style.setProperty('--eclipse-phase', phase.toFixed(3));
+  sliderEl.style.setProperty('--eclipse-phase', eclipseStrength.toFixed(3));
   sliderEl.style.setProperty('--moon-x', moonX.toFixed(2) + '%');
-  sliderEl.style.setProperty('--moon-alpha', phase.toFixed(3));
+  sliderEl.style.setProperty('--moon-alpha', eclipseStrength.toFixed(3));
   sliderEl.style.setProperty('--corona-alpha', coronaAlpha.toFixed(3));
 }
+
+function animateSliderThumb() {
+  updateSliderThumbState();
+  requestAnimationFrame(animateSliderThumb);
+}
+requestAnimationFrame(animateSliderThumb);
 
 // ── Slider input → scroll ──
 sliderEl.addEventListener('input', () => {
@@ -1533,7 +1559,6 @@ sliderEl.addEventListener('input', () => {
   const pct = parseFloat(sliderEl.value);
   outer.scrollLeft = (pct / 100) * max;
   sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
-  updateSliderThumbState(pct);
   updateProjection();   // synchronous — line moves with thumb, same frame
 });
 
@@ -1629,7 +1654,6 @@ function renderFrame() {
     sliderEl.value = String(pct);
     sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
   }
-  updateSliderThumbState(pct);
   // When slider IS driving: --p is already set directly in the input handler
 
   // Projection line — always reads live scrollLeft, zero lag
