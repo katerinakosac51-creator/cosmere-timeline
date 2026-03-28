@@ -87,6 +87,15 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
 }
 .header p  { font-size: 16px; color: var(--muted); letter-spacing: 2px; font-style: italic; }
 
+.site-footer {
+  border-top: 1px solid rgba(201,168,76,.14);
+  padding: 14px 16px 22px;
+  text-align: center;
+  color: rgba(212,207,196,.72);
+  font-size: 12px;
+  letter-spacing: .2px;
+}
+
 /* ── LEGEND ── */
 .legend {
   display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
@@ -103,6 +112,12 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
   transition: all .2s; user-select: none;
 }
 .leg-all:hover { color: var(--gold); border-color: var(--gold); }
+.leg-all.active {
+  color: #0d0d18;
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 14px rgba(201,168,76,.28);
+}
 
 /* Planet pill — solid background for readability */
 .leg-item {
@@ -400,6 +415,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
     width: fit-content;
   }
   .lang-btn { font-size: 9px; padding: 5px 8px; min-width: 35px; }
+  .site-footer { font-size: 11px; padding: 12px 12px 20px; }
 }
 
 /* Tap highlight suppression (iOS) */
@@ -569,6 +585,9 @@ input[type=range].slider:hover::-webkit-slider-thumb {
       <div id="proj-line"></div>
     </div>
   </div>
+  <footer class="site-footer">
+    <p id="footer-rights">All rights to the books and book covers belong to their rightful owners.</p>
+  </footer>
 </div>
 
 <script>
@@ -588,6 +607,7 @@ const TRANSLATIONS = {
     pageTitle: 'The Cosmere Timeline',
     title: 'THE COSMERE',
     subtitle: 'Shardworld Timeline · approximate in-universe chronology',
+    rightsNotice: 'All rights to the books and book covers belong to their rightful owners.',
     allWorlds: 'ALL WORLDS',
     earlier: 'EARLIER',
     later: 'LATER',
@@ -613,6 +633,7 @@ const TRANSLATIONS = {
     pageTitle: 'Хронологія Космеру',
     title: 'КОСМЕР',
     subtitle: 'Часова шкала світів Шардів · приблизна хронологія всесвіту',
+    rightsNotice: 'Усі права на книги та обкладинки книг належать їхнім правовласникам.',
     allWorlds: 'ВСІ СВІТИ',
     earlier: 'РАНІШЕ',
     later: 'ПІЗНІШЕ',
@@ -892,6 +913,8 @@ function applyTranslations() {
   document.title = t('pageTitle');
   document.querySelector('.header h1').textContent = t('title');
   document.querySelector('.header p').textContent = t('subtitle');
+  const footerRights = document.getElementById('footer-rights');
+  if (footerRights) footerRights.textContent = t('rightsNotice');
   document.documentElement.lang = currentLang;
   
   // Dynamic buttons
@@ -1320,11 +1343,15 @@ function rebuildLegend() {
 
 // Initial legend build - single call
 rebuildLegend();
+setFilter(null);
 
 function setFilter(pid) {
   activePlanet = pid;
   const allBtn = legendEl.querySelector('.leg-all');
-  if (allBtn) allBtn.style.opacity = pid ? '0.45' : '1';
+  if (allBtn) {
+    allBtn.style.opacity = pid ? '0.45' : '1';
+    allBtn.classList.toggle('active', !pid);
+  }
   for (const [id, el] of Object.entries(legItems)) {
     el.classList.toggle('active', id === pid);
     el.classList.toggle('faded', !!pid && id !== pid);
@@ -1577,12 +1604,16 @@ let rafPending    = false; // rAF frame already scheduled
 // Target scroll set by slider; -1 = not driven by slider this frame
 let sliderTarget  = -1;
 
+function cancelAutoScrollTarget() {
+  sliderTarget = -1;
+  lerpActive = false;
+}
+
 // ── Mouse drag on timeline ──
 outer.addEventListener('mousedown', e => {
   dragging = true; dragX0 = e.pageX - outer.offsetLeft; scrollX0 = outer.scrollLeft;
   outer.style.userSelect = 'none';
-  sliderTarget = -1;  // Cancel any active lerp animation
-  lerpActive = false;
+  cancelAutoScrollTarget();
 });
 document.addEventListener('mouseup', () => { dragging = false; outer.style.userSelect = ''; });
 outer.addEventListener('mousemove', e => {
@@ -1594,6 +1625,12 @@ outer.addEventListener('mousemove', e => {
 
 // Use native touch scrolling for iOS momentum/inertia.
 // This preserves the "swipe and glide" behavior users expect.
+outer.addEventListener('touchstart', () => {
+  cancelAutoScrollTarget();
+}, { passive: true });
+outer.addEventListener('wheel', () => {
+  cancelAutoScrollTarget();
+}, { passive: true });
 
 // ── Slider thumb drag guards ──
 sliderEl.addEventListener('mousedown',  () => { sliderDriving = true; });
@@ -1624,6 +1661,7 @@ requestAnimationFrame(animateSliderThumb);
 
 // ── Slider input → scroll ──
 sliderEl.addEventListener('input', () => {
+  cancelAutoScrollTarget();
   // Direct drag: instant scroll + instant line update — no lerp, no lag
   const max = outer.scrollWidth - outer.clientWidth;
   const pct = parseFloat(sliderEl.value);
