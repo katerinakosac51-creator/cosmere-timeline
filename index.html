@@ -52,8 +52,13 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
 #ov-fall {
   width: 100%; height: 100%;
   display: none; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 20px;
-  font-family: var(--ff-h); font-size: 16px; line-height: 1.5;
+  text-align: center; padding: 24px;
+  font-family: var(--ff-h); font-size: 16px; line-height: 1.45;
+  overflow-wrap: anywhere; word-break: break-word; hyphens: auto;
+  text-shadow: 0 2px 12px rgba(0,0,0,.6);
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.28)),
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.12));
 }
 
 #ov-info {
@@ -63,6 +68,7 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
 }
 #overlay.on #ov-info { opacity: 1; transform: translateX(0); }
 #ov-title  { font-family: var(--ff-h); font-size: 28px; color: var(--gold); margin-bottom: 8px; line-height: 1.2; }
+#ov-original { font-size: 13px; color: rgba(212,207,196,.82); font-style: italic; margin-bottom: 10px; line-height: 1.35; }
 #ov-planet { font-size: 15px; margin-bottom: 4px; letter-spacing: .5px; }
 #ov-year   { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 20px; }
 #ov-rule   { width: 48px; height: 1px; background: var(--gold-d); margin-bottom: 20px; }
@@ -196,7 +202,23 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
 .cfall {
   width: 100%; height: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 10px; text-align: center; font-size: 14px; font-family: var(--ff-h); line-height: 1.4;
+  padding: 12px 10px 14px;
+  text-align: center; font-size: 13px; font-family: var(--ff-h); line-height: 1.28;
+  overflow-wrap: anywhere; word-break: break-word; hyphens: auto;
+  text-shadow: 0 1px 8px rgba(0,0,0,.5);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.16)),
+    radial-gradient(circle at 50% 35%, rgba(255,255,255,.05), transparent 60%);
+}
+.cfall .fall-tag {
+  font-size: 8px;
+  opacity: .6;
+  margin-bottom: 7px;
+  letter-spacing: .9px;
+}
+.cfall .fall-title,
+#ov-fall .fall-title {
+  max-width: 100%;
 }
 
 /* ── SLIDER ── */
@@ -209,20 +231,38 @@ input[type=range].slider {
   flex: 1; -webkit-appearance: none; appearance: none; height: 3px;
   background: linear-gradient(90deg, var(--gold) var(--p,0%), rgba(255,255,255,.1) var(--p,0%));
   border-radius: 3px; outline: none; cursor: pointer;
+  --eclipse-phase: 0;
+  --moon-x: 18%;
+  --moon-alpha: 0;
+  --corona-alpha: .26;
+  --thumb-bg:
+    radial-gradient(circle at var(--moon-x) 50%, rgba(8,8,16,var(--moon-alpha)) 0 31%, rgba(10,10,20,var(--moon-alpha)) 32% 42%, transparent 43%),
+    radial-gradient(circle at 50% 50%, rgba(255,247,214,.98) 0 18%, rgba(255,226,132,.97) 19% 39%, rgba(230,191,74,.93) 40% 58%, rgba(201,168,76,var(--corona-alpha)) 59% 73%, rgba(201,168,76,0) 74%),
+    radial-gradient(circle at 35% 35%, rgba(255,255,240,.32) 0 10%, transparent 11%);
+  --thumb-border: 2px solid var(--bg);
+  --thumb-shadow:
+    0 0 0 1px rgba(255,224,139,.18),
+    0 0 10px rgba(201,168,76,.68),
+    0 0 18px rgba(201,168,76,.26);
 }
 input[type=range].slider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--gold); border: 2px solid var(--bg);
-  box-shadow: 0 0 8px rgba(201,168,76,.6); cursor: pointer;
-  transition: transform .15s, box-shadow .15s;
+  background: var(--thumb-bg); border: var(--thumb-border);
+  box-shadow: var(--thumb-shadow); cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s, background .15s;
 }
 input[type=range].slider::-moz-range-thumb {
   width: 16px; height: 16px; border-radius: 50%;
-  background: var(--gold); border: 2px solid var(--bg);
-  box-shadow: 0 0 8px rgba(201,168,76,.6); cursor: pointer;
+  background: var(--thumb-bg); border: var(--thumb-border);
+  box-shadow: var(--thumb-shadow); cursor: pointer;
+  transition: transform .15s, box-shadow .15s, border-color .15s, background .15s;
 }
 input[type=range].slider:hover::-webkit-slider-thumb {
-  transform: scale(1.4); box-shadow: 0 0 16px rgba(201,168,76,.85);
+  transform: scale(1.4);
+  box-shadow:
+    0 0 0 1px rgba(255,224,139,.24),
+    0 0 14px rgba(201,168,76,.82),
+    0 0 24px rgba(201,168,76,.34);
 }
 
 /* ── LANGUAGE SELECTOR ── */
@@ -321,6 +361,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
     text-align: center;
   }
   #ov-title  { font-size: 20px; }
+  #ov-original { font-size: 11px; margin-bottom: 8px; }
   #ov-planet { font-size: 13px; }
   #ov-year   { font-size: 11px; margin-bottom: 12px; }
   #ov-rule   { margin: 0 auto 12px; }
@@ -421,6 +462,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   </div>
   <div id="ov-info">
     <div id="ov-title"></div>
+    <div id="ov-original"></div>
     <div id="ov-planet"></div>
     <div id="ov-year"></div>
     <div id="ov-rule"></div>
@@ -464,6 +506,7 @@ const WP = 'https://upload.wikimedia.org/wikipedia/en/';
 // ─────────────────────────────────────────────
 const TRANSLATIONS = {
   en: {
+    pageTitle: 'The Cosmere Timeline',
     title: 'THE COSMERE',
     subtitle: 'Shardworld Timeline · approximate in-universe chronology',
     allWorlds: 'ALL WORLDS',
@@ -488,6 +531,7 @@ const TRANSLATIONS = {
     canticle: 'Canticle (Sunlit Man)',
   },
   uk: {
+    pageTitle: 'Хронологія Космеру',
     title: 'КОСМЕР',
     subtitle: 'Часова шкала світів Шардів · приблизна хронологія всесвіту',
     allWorlds: 'ВСІ СВІТИ',
@@ -553,25 +597,25 @@ const TRANSLATIONS = {
     elantrisBook2_uk: 'Елантріс: Книга 2',
     elantrisBook3_uk: 'Елантріс: Книга 3',
     theEleventhMetal_uk: 'Одинадцятий метал',
-    theFinalEmpire_uk: 'Остання імперія',
+    theFinalEmpire_uk: 'З-імли-народжені',
     secretHistory_uk: 'Таємна історія',
-    wellOfAscension_uk: 'Колодязь виявлення',
+    wellOfAscension_uk: 'Джерело Вознесіння',
     heroOfAges_uk: 'Герой віків',
     shadowsForSilence_uk: 'Тіні мовчання',
     warbreaker_uk: 'Підбивач миру',
     theWayOfKings_uk: 'Шлях королів',
-    wordsOfRadiance_uk: 'Слова блиску',
+    wordsOfRadiance_uk: 'Слова Променистого ордену',
     edgedancer_uk: 'Танцівниця на межі',
-    oathbringer_uk: 'Принесець клятви',
+    oathbringer_uk: 'Присяжник',
     dawnshard_uk: 'Уламок світанку',
     rhythmOfWar_uk: 'Ритм війни',
-    windAndTruth_uk: 'Вітер і правда',
+    windAndTruth_uk: 'Вітер та Істина',
     alloyOfLaw_uk: 'Сплав законів',
     allomancerJak_uk: 'Алломант Джек',
     shadowsOfSelf_uk: 'Тіні себе',
     bandsOfMourning_uk: 'Браслети жалоби',
     theLostMetal_uk: 'Втрачений метал',
-    tressOfTheEmeraldSea_uk: 'Тресс смарагдового моря',
+    tressOfTheEmeraldSea_uk: 'Тресс зі Смарагдового моря',
     yumiAndNightmarePainter_uk: 'Юмі та художник кошмарів',
     sixthOfTheDusk_uk: 'Шостий від сутінків',
     islesOfTheEmberdark_uk: 'Острови теплого морока',
@@ -752,7 +796,7 @@ function t(key) {
   if (currentLang === 'uk' && TRANSLATIONS.uk[key + '_uk']) {
     return TRANSLATIONS.uk[key + '_uk'];
   }
-  return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.en[key] || key;
+  return TRANSLATIONS[currentLang]?.[key] || TRANSLATIONS.en[key] || BOOK_TITLE_EN[key] || TRANSLATIONS.uk[key] || key;
 }
 
 function setLanguage(lang) {
@@ -761,10 +805,12 @@ function setLanguage(lang) {
   localStorage.setItem('cosmere-lang', lang);
   applyTranslations();
   updateLanguageSelector();
+  refreshBookCovers();
 }
 
 function applyTranslations() {
   // Static UI elements
+  document.title = t('pageTitle');
   document.querySelector('.header h1').textContent = t('title');
   document.querySelector('.header p').textContent = t('subtitle');
   document.documentElement.lang = currentLang;
@@ -831,6 +877,49 @@ const COVER_URL = {
   'Isles of the Emberdark':    BS + 'grounded_book_images_eb8cef98-9df2-4923-8003-53d7ea09b823.png',
 };
 
+const COVER_URL_UK = {
+  'The Way of Kings':      'https://i.mbooks.com.ua/media/books/87a12eb8-c61b-463b-8f22-93cd2f37c2b3/covers/4250/48833729291c4f59a75dcbe591196541.jpeg',
+  'Words of Radiance':     'https://i.mbooks.com.ua/media/books/01a82d7f-a686-4e20-a40e-0eac618bd9ad/covers/None/804af003495d4c0bb365090db4acea2f.jpeg',
+  'Oathbringer':           'https://i.mbooks.com.ua/media/books/ebd16617-1c8d-423f-8b7a-f9f23969d39f/covers/None/1c20ac6a28bd450f891629b43dfb15fe.jpeg',
+  'Rhythm of War':         'https://i.mbooks.com.ua/media/books/d9060b87-8b62-42e8-b584-b0a4700b23c0/covers/None/c450b095ca8e4cac903307bf39b9cb35.jpeg',
+  'Wind and Truth':        'https://i.mbooks.com.ua/media/books/3e55792d-00ac-417b-a981-6065c045f6e8/covers/None/9a110307399f4f78a810bd2f5645f7bf.jpeg',
+};
+
+const BOOK_TITLE_EN = {
+  dragonsteel: 'Dragonsteel',
+  theSilenceDivine: 'The Silence Divine',
+  whiteSand: 'White Sand',
+  elantris: 'Elantris',
+  hopeOfElantris: 'Hope of Elantris',
+  theEmperorsSoul: "The Emperor's Soul",
+  elantrisBook2: 'Elantris Book 2',
+  elantrisBook3: 'Elantris Book 3',
+  theEleventhMetal: 'The Eleventh Metal',
+  theFinalEmpire: 'The Final Empire',
+  secretHistory: 'Secret History',
+  wellOfAscension: 'Well of Ascension',
+  heroOfAges: 'Hero of Ages',
+  shadowsForSilence: 'Shadows for Silence',
+  warbreaker: 'Warbreaker',
+  theWayOfKings: 'The Way of Kings',
+  wordsOfRadiance: 'Words of Radiance',
+  edgedancer: 'Edgedancer',
+  oathbringer: 'Oathbringer',
+  dawnshard: 'Dawnshard',
+  rhythmOfWar: 'Rhythm of War',
+  windAndTruth: 'Wind and Truth',
+  alloyOfLaw: 'Alloy of Law',
+  allomancerJak: 'Allomancer Jak',
+  shadowsOfSelf: 'Shadows of Self',
+  bandsOfMourning: 'Bands of Mourning',
+  theLostMetal: 'The Lost Metal',
+  tressOfTheEmeraldSea: 'Tress of the Emerald Sea',
+  yumiAndNightmarePainter: 'Yumi & Nightmare Painter',
+  sixthOfTheDusk: 'Sixth of the Dusk',
+  islesOfTheEmberdark: 'Isles of the Emberdark',
+  theSunlitMan: 'The Sunlit Man',
+};
+
 const PLANETS = {
   yolen:     { labelKey: 'yolen',     color: '#c9a84c' },
   taldain:   { labelKey: 'taldain',   color: '#7F77DD' },
@@ -849,6 +938,22 @@ const PLANETS = {
 function getPlanetLabel(planetId) {
   const planet = PLANETS[planetId];
   return planet ? t(planet.labelKey) : planetId;
+}
+
+function getCanonicalBookTitle(titleKey) {
+  return BOOK_TITLE_EN[titleKey] || titleKey;
+}
+
+function getOriginalBookTitle(titleKey) {
+  return BOOK_TITLE_EN[titleKey] || t(titleKey);
+}
+
+function getBookCoverUrl(book) {
+  const canonicalTitle = getCanonicalBookTitle(book.titleKey);
+  if (currentLang === 'uk' && COVER_URL_UK[canonicalTitle]) {
+    return COVER_URL_UK[canonicalTitle];
+  }
+  return COVER_URL[canonicalTitle] ?? null;
 }
 
 // x positions scaled 50% larger (originals × 1.5, rounded to nearest 5)
@@ -991,6 +1096,80 @@ function trimCoverImage(img, container) {
   }
 }
 
+function createCoverImage(book, container) {
+  const img = document.createElement('img');
+  img.crossOrigin = 'anonymous';
+  img.alt = t(book.titleKey);
+  img.loading = 'lazy';
+  img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
+  img.addEventListener('load', () => trimCoverImage(img, container));
+  img.addEventListener('error', function h() {
+    this.removeEventListener('error', h);
+    this.remove();
+    if (!container.querySelector('.cfall')) {
+      container.insertBefore(fallback(t(book.titleKey), PLANETS[book.planet].color, false), container.querySelector('.cw-band'));
+    }
+  });
+  return img;
+}
+
+function refreshBookCovers() {
+  document.querySelectorAll('.cw').forEach(cw => {
+    const idx = parseInt(cw.dataset.bookIdx, 10);
+    if (Number.isNaN(idx)) return;
+
+    const book = BOOKS[idx];
+    const planet = PLANETS[book.planet];
+    const url = getBookCoverUrl(book);
+    const band = cw.querySelector('.cw-band');
+    const existingImg = cw.querySelector('img');
+    const existingFallback = cw.querySelector('.cfall');
+
+    if (book.upcoming || !url) {
+      if (existingImg) existingImg.remove();
+      if (!existingFallback) {
+        cw.insertBefore(fallback(t(book.titleKey), planet.color, !!book.upcoming), band);
+      } else {
+        existingFallback.style.color = planet.color;
+        existingFallback.innerHTML = book.upcoming
+          ? `<div class="fall-tag">${t('forthcoming')}</div><div class="fall-title">${t(book.titleKey)}</div>`
+          : `<div class="fall-title">${t(book.titleKey)}</div>`;
+      }
+      if (book.upcoming) {
+        cw.style.borderStyle = 'dashed';
+        cw.style.opacity = '0.6';
+      }
+      return;
+    }
+
+    if (existingFallback) existingFallback.remove();
+    cw.style.borderStyle = '';
+    cw.style.opacity = '';
+    cw.style.backgroundImage = '';
+    cw.style.backgroundSize = '';
+    cw.style.backgroundPosition = '';
+    cw.style.backgroundRepeat = '';
+
+    if (existingImg) {
+      existingImg.alt = t(book.titleKey);
+      if (existingImg.src !== url) {
+        existingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
+        existingImg.src = url;
+      }
+    } else {
+      const img = createCoverImage(book, cw);
+      img.src = url;
+      cw.insertBefore(img, band);
+    }
+  });
+
+  if (overlay.classList.contains('on') && currentBook) {
+    const openBook = currentBook;
+    currentBook = null;
+    showOverlay(openBook, PLANETS[openBook.planet], getBookCoverUrl(openBook));
+  }
+}
+
 for (const b of BOOKS) {
   if (!planetCenterX[b.planet]) planetCenterX[b.planet] = [];
   planetCenterX[b.planet].push(b.x);
@@ -1095,8 +1274,7 @@ rebuildEras();
 
 for (const b of BOOKS) {
   const p   = PLANETS[b.planet];
-  const englishTitle = TRANSLATIONS.en[b.titleKey];
-  const url = COVER_URL[englishTitle] ?? null;
+  const url = getBookCoverUrl(b);
 
   // Dot
   const dot = document.createElement('div');
@@ -1121,17 +1299,8 @@ for (const b of BOOKS) {
   cw.style.borderColor = p.color + '66';
 
   if (url && !b.upcoming) {
-    const img = document.createElement('img');
-    img.crossOrigin = 'anonymous';
-    img.alt = t(b.titleKey); img.loading = 'lazy';
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
-    img.addEventListener('load', () => trimCoverImage(img, cw));
+    const img = createCoverImage(b, cw);
     img.src = url;
-    img.addEventListener('error', function h() {
-      this.removeEventListener('error', h);
-      this.style.display = 'none';
-      cw.appendChild(fallback(t(b.titleKey), p.color, false));
-    });
     cw.appendChild(img);
   } else {
     cw.appendChild(fallback(t(b.titleKey), p.color, !!b.upcoming));
@@ -1160,8 +1329,8 @@ function fallback(title, color, upcoming) {
   const d = document.createElement('div');
   d.className = 'cfall'; d.style.color = color;
   d.innerHTML = upcoming
-    ? `<div style="font-size:9px;opacity:.45;margin-bottom:5px;letter-spacing:1px">✦ FORTHCOMING</div><div>${title}</div>`
-    : `<div>${title}</div>`;
+    ? `<div class="fall-tag">${t('forthcoming')}</div><div class="fall-title">${title}</div>`
+    : `<div class="fall-title">${title}</div>`;
   return d;
 }
 
@@ -1174,6 +1343,7 @@ const ovImgWrap = document.getElementById('ov-img');
 const ovImgEl   = document.getElementById('ov-img-el');
 const ovFall    = document.getElementById('ov-fall');
 const ovTitle   = document.getElementById('ov-title');
+const ovOriginal = document.getElementById('ov-original');
 const ovPlanet  = document.getElementById('ov-planet');
 const ovYear    = document.getElementById('ov-year');
 const ovBlurb   = document.getElementById('ov-blurb');
@@ -1228,7 +1398,7 @@ function showOverlay(b, p, url) {
       ovImgEl.style.display = 'none';
       ovFall.style.display  = 'flex';
       ovFall.style.color    = p.color;
-      ovFall.textContent    = t(b.titleKey);
+      ovFall.innerHTML      = `<div class="fall-title">${t(b.titleKey)}</div>`;
     };
     ovImgEl.src = url;
   } else {
@@ -1237,13 +1407,20 @@ function showOverlay(b, p, url) {
     ovFall.style.display  = 'flex';
     ovFall.style.color    = p.color;
     ovFall.innerHTML = b.upcoming
-      ? `<div style="font-size:12px;opacity:.5;margin-bottom:10px">✦ FORTHCOMING</div><div style="font-size:20px">${t(b.titleKey)}</div>`
-      : `<div style="font-size:18px">${t(b.titleKey)}</div>`;
+      ? `<div class="fall-tag" style="font-size:12px;margin-bottom:10px">${t('forthcoming')}</div><div class="fall-title" style="font-size:20px">${t(b.titleKey)}</div>`
+      : `<div class="fall-title" style="font-size:18px">${t(b.titleKey)}</div>`;
   }
 
   ovImgWrap.style.borderColor = p.color + '99';
   // ── Text always matches the book being hovered ──
   ovTitle.textContent  = t(b.titleKey);
+  if (currentLang !== 'en') {
+    ovOriginal.textContent = `(${getOriginalBookTitle(b.titleKey)})`;
+    ovOriginal.style.display = 'block';
+  } else {
+    ovOriginal.textContent = '';
+    ovOriginal.style.display = 'none';
+  }
   ovPlanet.textContent = getPlanetLabel(b.planet);
   ovPlanet.style.color = p.color;
   ovYear.textContent   = t(b.yearKey);
@@ -1277,8 +1454,7 @@ document.addEventListener('mousemove', e => {
     if (!isNaN(idx)) {
       const b = BOOKS[idx];
       const p = PLANETS[b.planet];
-      const englishTitle = TRANSLATIONS.en[b.titleKey];
-      const url = COVER_URL[englishTitle] ?? null;
+      const url = getBookCoverUrl(b);
       clearTimeout(hideTimer);
       showOverlay(b, p, url);
     }
@@ -1339,6 +1515,17 @@ sliderEl.addEventListener('touchstart', () => { sliderDriving = true; }, { passi
 document.addEventListener('mouseup',   () => { sliderDriving = false; });
 document.addEventListener('touchend',  () => { sliderDriving = false; });
 
+function updateSliderThumbState(pct) {
+  const phase = Math.max(0, Math.min(1, pct / 12));
+  const moonX = 18 + (phase * 24);
+  const coronaAlpha = 0.26 + (phase * 0.18);
+
+  sliderEl.style.setProperty('--eclipse-phase', phase.toFixed(3));
+  sliderEl.style.setProperty('--moon-x', moonX.toFixed(2) + '%');
+  sliderEl.style.setProperty('--moon-alpha', phase.toFixed(3));
+  sliderEl.style.setProperty('--corona-alpha', coronaAlpha.toFixed(3));
+}
+
 // ── Slider input → scroll ──
 sliderEl.addEventListener('input', () => {
   // Direct drag: instant scroll + instant line update — no lerp, no lag
@@ -1346,6 +1533,7 @@ sliderEl.addEventListener('input', () => {
   const pct = parseFloat(sliderEl.value);
   outer.scrollLeft = (pct / 100) * max;
   sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
+  updateSliderThumbState(pct);
   updateProjection();   // synchronous — line moves with thumb, same frame
 });
 
@@ -1441,6 +1629,7 @@ function renderFrame() {
     sliderEl.value = String(pct);
     sliderEl.style.setProperty('--p', pct.toFixed(2) + '%');
   }
+  updateSliderThumbState(pct);
   // When slider IS driving: --p is already set directly in the input handler
 
   // Projection line — always reads live scrollLeft, zero lag
