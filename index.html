@@ -941,8 +941,9 @@ function applyTranslations() {
   const legend = document.getElementById('legend');
   if (legend) legend.setAttribute('aria-label', t('planetFilter'));
   
-  // Rebuild legend items with new labels
+  // Rebuild legend items with new labels and preserve active filter state.
   rebuildLegend();
+  setFilter(activePlanet);
   
   // Rebuild era labels on canvas
   rebuildEras();
@@ -1306,12 +1307,6 @@ function scrollToPlanet(pid) {
   sliderTarget = Math.max(0, Math.min(targetScroll, outer.scrollWidth - outer.clientWidth));
   scheduleFrame();
 }
-
-const allBtn = Object.assign(document.createElement('button'), {
-  className: 'leg-all', textContent: 'ALL WORLDS'
-});
-allBtn.addEventListener('click', () => setFilter(null));
-legendEl.appendChild(allBtn);
 
 const legItems = {};
 
