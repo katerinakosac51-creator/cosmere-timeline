@@ -11,7 +11,7 @@
   --ff-h:    'Cinzel', serif;
   --ff-b:    'Crimson Pro', Georgia, serif;
 }
-html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--ff-b); }
+html, body { min-height: 100%; max-width: 1920px; margin-inline: auto; overflow-x: hidden; background: var(--bg); color: var(--text); font-family: var(--ff-b); }
 
 /* ── HOVER OVERLAY ── */
 #overlay {

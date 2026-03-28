@@ -308,7 +308,7 @@ for (const b of BOOKS) {
   bk.className   = 'bk';
   bk.dataset.planet = b.planet;
   bk.dataset.x = b.x;  // canvas-x center for projection hit-test
-  bk.style.left  = (b.x - 54) + 'px';  // half of 108px cover width
+  bk.style.left  = (b.x - 55) + 'px';  // half of 110px bk width — centers bk and stem on b.x
 
   const stem = document.createElement('div');
   stem.className = 'stem';
