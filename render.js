@@ -129,15 +129,17 @@ function trimCoverImage(img, container) {
       const i = (y * w + x) * 4;
       return [data[i], data[i+1], data[i+2], data[i+3]];
     }
-    const corners = [px(0,0), px(w-1,0), px(0,h-1), px(w-1,h-1)];
-
-    let br = 0, bg = 0, bb = 0;
-    for (const [r,g,b] of corners) { br+=r; bg+=g; bb+=b; }
-    br = Math.round(br/4); bg = Math.round(bg/4); bb = Math.round(bb/4);
-
-    // Only trim if background is light-ish (luminance > 160)
-    const bgLum = 0.299*br + 0.587*bg + 0.114*bb;
-    if (bgLum < 160) return;
+    // Sample corners + edge midpoints; pick the lightest point as background candidate.
+    // This catches covers with dark corners but light borders (e.g. Way of Kings).
+    const samples = [px(0,0), px(w-1,0), px(0,h-1), px(w-1,h-1),
+                     px(w>>1,0), px(w>>1,h-1), px(0,h>>1), px(w-1,h>>1)];
+    let br = 0, bg = 0, bb = 0, bestLum = -1;
+    for (const [r,g,b,a] of samples) {
+      if (a < 20) continue;
+      const lum = 0.299*r + 0.587*g + 0.114*b;
+      if (lum > bestLum) { bestLum = lum; br = r; bg = g; bb = b; }
+    }
+    if (bestLum < 160) return;
 
     const THRESH = 40;
     function isBg(x, y) {
@@ -166,7 +168,7 @@ function trimCoverImage(img, container) {
 
     const cropW = rgt - lft + 1, cropH = bot - top + 1;
     const pad = Math.max(lft/w, top/h, (w-1-rgt)/w, (h-1-bot)/h);
-    if (pad < 0.04) return;
+    if (pad < 0.015) return;
 
     const scaleX = container.offsetWidth  / cropW;
     const scaleY = container.offsetHeight / cropH;
@@ -189,11 +191,13 @@ function fallback(title, color, upcoming) {
   return d;
 }
 
-function createCoverImage(book, container) {
+function createCoverImage(book, container, url) {
   const img = document.createElement('img');
-  img.crossOrigin = 'anonymous';
+  // Only set crossOrigin for hosts that send ACAO headers; others (coppermind.net, file://) fail if set.
+  const CORS_HOST = /i\.mbooks\.com\.ua|upload\.wikimedia\.org|brandonsanderson\.com/;
+  if (url && CORS_HOST.test(url)) img.crossOrigin = 'anonymous';
   img.alt = t(book.titleKey);
-  img.loading = 'lazy';
+  img.loading = 'eager';
   img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center center;display:block';
   img.addEventListener('load', () => trimCoverImage(img, container));
   img.addEventListener('error', function h() {
@@ -252,7 +256,7 @@ function refreshBookCovers() {
         trimCoverImage(existingImg, cw);
       }
     } else {
-      const img = createCoverImage(book, cw);
+      const img = createCoverImage(book, cw, url);
       img.src = url;
       cw.insertBefore(img, band);
     }
@@ -309,6 +313,10 @@ for (const b of BOOKS) {
   bk.dataset.planet = b.planet;
   bk.dataset.x = b.x;  // canvas-x center for projection hit-test
   bk.style.left  = (b.x - 55) + 'px';  // half of 110px bk width — centers bk and stem on b.x
+  // Planet RGB triplet for CSS variable (used by .near highlight)
+  const _hex = p.color.replace('#', '');
+  bk.style.setProperty('--pc-rgb',
+    `${parseInt(_hex.slice(0,2),16)},${parseInt(_hex.slice(2,4),16)},${parseInt(_hex.slice(4,6),16)}`);
 
   const stem = document.createElement('div');
   stem.className = 'stem';
@@ -319,7 +327,7 @@ for (const b of BOOKS) {
   cw.style.borderColor = p.color + '66';
 
   if (url && !b.upcoming) {
-    const img = createCoverImage(b, cw);
+    const img = createCoverImage(b, cw, url);
     img.src = url;
     cw.appendChild(img);
   } else {

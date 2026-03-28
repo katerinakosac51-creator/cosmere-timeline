@@ -32,6 +32,7 @@ function resetImgState() {
   ovImgEl.onload  = null;
   ovImgEl.onerror = null;
   ovImgEl.src     = '';
+  ovImgEl.removeAttribute('crossorigin');
   ovImgWrap.style.backgroundImage    = '';
   ovImgWrap.style.backgroundSize     = '';
   ovImgWrap.style.backgroundPosition = '';
@@ -52,7 +53,12 @@ function showOverlay(b, p, url) {
     ovImgEl.style.display = 'block';
     ovFall.style.display  = 'none';
     ovImgEl.alt           = t(b.titleKey);
-    ovImgEl.crossOrigin   = 'anonymous';
+    // Only set crossOrigin for hosts that send Access-Control-Allow-Origin headers.
+    // Setting it on hosts that don't (e.g. coppermind.net, file://) causes onerror to fire.
+    const CORS_HOST = /i\.mbooks\.com\.ua|upload\.wikimedia\.org|brandonsanderson\.com/;
+    if (url && CORS_HOST.test(url)) {
+      ovImgEl.crossOrigin = 'anonymous';
+    } // else: no crossOrigin attribute → image loads fine, trimCoverImage fails gracefully
     ovImgEl.onload  = () => { if (loadToken === token) trimCoverImage(ovImgEl, ovImgWrap); };
     ovImgEl.onerror = () => {
       if (loadToken !== token) return;

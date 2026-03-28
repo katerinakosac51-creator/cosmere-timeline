@@ -63,7 +63,7 @@ html, body { min-height: 100%; max-width: 1920px; margin-inline: auto; overflow-
 #ov-title  { font-family: var(--ff-h); font-size: 35px; color: var(--gold); margin-bottom: 8px; line-height: 1.2; }
 #ov-original { font-size: 20px; color: rgba(212,207,196,.82); font-style: italic; margin-bottom: 10px; line-height: 1.35; }
 #ov-planet { font-size: 20px; margin-bottom: 4px; letter-spacing: .5px; }
-#ov-year   { font-size: 13px; color: var(--muted); font-style: italic; margin-bottom: 20px; }
+#ov-year   { font-size: 13px; color: rgba(201,168,76,.72); font-style: italic; margin-bottom: 20px; letter-spacing: .4px; }
 #ov-rule   { width: 48px; height: 1px; background: var(--gold-d); margin-bottom: 20px; }
 #ov-blurb  { font-size: 18px; line-height: 1.8; }
 
@@ -91,10 +91,14 @@ html, body { min-height: 100%; max-width: 1920px; margin-inline: auto; overflow-
 
 /* ── LEGEND ── */
 .legend {
-  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  display: flex; gap: 10px; flex-wrap: nowrap;
   padding: 10px 24px 8px; border-bottom: 1px solid rgba(255,255,255,.05);
   background: var(--bg); position: relative; z-index: 200;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; cursor: grab;
 }
+.legend::-webkit-scrollbar { display: none; }
+.legend.grabbing { cursor: grabbing; }
 
 /* All Worlds button */
 .leg-all {
@@ -120,6 +124,7 @@ html, body { min-height: 100%; max-width: 1920px; margin-inline: auto; overflow-
   border: 1.5px solid transparent;
   background: rgba(255,255,255,.06);
   color: var(--text);
+  white-space: nowrap;
   transition: all .2s; user-select: none;
 }
 .leg-item:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.2); }
@@ -160,17 +165,19 @@ html, body { min-height: 100%; max-width: 1920px; margin-inline: auto; overflow-
   pointer-events: none;
 }
 
-/* Era label — below axis */
+/* Era label — below axis, above all book covers */
 .era-lbl {
   position: absolute; top: 434px;
   font-family: var(--ff-h); font-size: 13px; color: var(--gold-d); letter-spacing: 0.8px;
   transform: translateX(-50%); white-space: nowrap; pointer-events: none;
+  z-index: 200;
 }
 
-/* Year marker — above axis */
+/* Year marker — above axis, above all book covers */
 .yr-mark {
   position: absolute; top: 358px;
   font-family: var(--ff-h); font-size: 12px; color: rgba(201,168,76,.65); letter-spacing: 0.4px;
+  z-index: 200;
   transform: translateX(-50%); white-space: nowrap; pointer-events: none;
   padding-top: 0;
 }
@@ -224,10 +231,11 @@ html, body { min-height: 100%; max-width: 1920px; margin-inline: auto; overflow-
     radial-gradient(circle at 50% 35%, rgba(255,255,255,.05), transparent 60%);
 }
 .cfall .fall-tag {
-  font-size: 8px;
-  opacity: .6;
+  font-size: 10px;
+  opacity: .9;
   margin-bottom: 7px;
-  letter-spacing: .9px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
 }
 .cfall .fall-title,
 #ov-fall .fall-title {
@@ -340,18 +348,8 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   .header h1 { font-size: 27.5px; letter-spacing: 4px; margin-bottom: 4px; }
   .header p  { font-size: 12px; letter-spacing: 1px; }
 
-  /* Legend — compact scrollable row */
-  .legend {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: visible;
-    justify-content: flex-start;
-    padding: 8px 12px 6px;
-    gap: 7px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-  .legend::-webkit-scrollbar { display: none; }
+  /* Legend — mobile sizing */
+  .legend { padding: 8px 12px 6px; gap: 7px; }
   .leg-all, .leg-item {
     font-size: 10.8px;
     padding: 5px 10px;
@@ -433,39 +431,17 @@ input[type=range].slider:hover::-webkit-slider-thumb {
     transparent 100%
   );
   pointer-events: none;
-  z-index: 50;
+  z-index: 4;   /* below .bk (10) — line goes under covers */
   --ay: 45%;   /* axis position as % of canvas height, set by JS */
 }
 
-/* Ray burst emitted from the projection line when crossing a book */
-#proj-line::before {
-  content: '';
+/* Canvas-based ray burst (replaces CSS ::before animation) */
+#ray-canvas {
   position: absolute;
-  top: var(--ay);
-  left: 50%;
-  width: 32px;
-  height: 30px;
-  transform: translate(-50%, -50%) scaleY(0.35);
-  opacity: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(var(--ray-rgb), 0) 0%,
-    rgba(var(--ray-rgb), .75) 50%,
-    rgba(var(--ray-rgb), 0) 100%
-  );
-  border-radius: 999px;
-  filter: blur(2px) drop-shadow(0 0 7px rgba(var(--ray-rgb), .6));
-}
-
-#proj-line.ray-pulse::before {
-  animation: projRayPulse .55s cubic-bezier(.22,.61,.36,1);
-}
-
-@keyframes projRayPulse {
-  0%   { opacity: 0;   width: 34px; height: 24px;  transform: translate(-50%, -50%) scaleY(0.25); }
-  22%  { opacity: .96; width: 32px; height: 150px; transform: translate(-50%, -50%) scaleY(1); }
-  60%  { opacity: .62; width: 14px; height: 235px; transform: translate(-50%, -50%) scaleY(1.04); }
-  100% { opacity: 0;   width: 5px;  height: 305px; transform: translate(-50%, -50%) scaleY(1.08); }
+  top: 0;
+  left: -64px; /* centers 130px canvas on the 2px proj-line */
+  pointer-events: none;
+  z-index: 3;   /* below proj-line (4) and covers (10) */
 }
 
 /* Glowing diamond at the axis intercept */
@@ -488,24 +464,17 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   will-change: transform;
 }
 
-@keyframes timelineTextPop {
-  0%   { transform: translateX(-50%) scale(1);   filter: brightness(1); }
-  45%  { transform: translateX(-50%) scale(1.62); filter: brightness(1.18); }
-  100% { transform: translateX(-50%) scale(1.48); filter: brightness(1.08); }
-}
 .era-lbl.near {
-  transform: translateX(-50%) translateY(-2px) scale(1.48);
+  transform: translateX(-50%) scale(1.48);
   color: var(--gold);
   text-shadow: 0 0 14px rgba(201,168,76,.68);
   filter: drop-shadow(0 0 8px rgba(201,168,76,.5));
-  animation: timelineTextPop .26s cubic-bezier(.2,.75,.25,1);
 }
 .yr-mark.near {
-  transform: translateX(-50%) translateY(-2px) scale(1.52);
+  transform: translateX(-50%) scale(1.52);
   color: rgba(201,168,76,1);
   text-shadow: 0 0 12px rgba(201,168,76,.76);
   filter: drop-shadow(0 0 8px rgba(201,168,76,.55));
-  animation: timelineTextPop .26s cubic-bezier(.2,.75,.25,1);
 }
 
 /* Tick also lights up */
@@ -517,8 +486,8 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 /* Book cover "popping" when crossed by the projection line */
 .bk.near .cw {
   transform: scale(1.12);
-  box-shadow: 0 0 22px 4px rgba(201,168,76,.35), 0 8px 32px rgba(0,0,0,.7);
-  border-color: rgba(201,168,76,.5) !important;
+  box-shadow: 0 0 22px 4px rgba(var(--pc-rgb, 201,168,76), .42), 0 8px 32px rgba(0,0,0,.7);
+  border-color: rgba(var(--pc-rgb, 201,168,76), .6) !important;
   z-index: 90;
   transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
