@@ -81,7 +81,10 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
 .page { width: 100%; max-width: 1920px; margin: 0 auto; }
 
 .header { text-align: center; padding: 28px 24px 12px; border-bottom: 1px solid rgba(201,168,76,.15); background: var(--bg); position: relative; z-index: 200; }
-.header h1 { font-family: var(--ff-h); font-size: 36px; color: var(--gold); letter-spacing: 8px; margin-bottom: 6px; }
+.header h1 {
+  font-family: var(--ff-h); font-size: 36px; color: var(--gold); letter-spacing: 8px; margin-bottom: 6px;
+  text-shadow: 0 0 1px rgba(201,168,76,.9), 0 0 8px rgba(201,168,76,.28);
+}
 .header p  { font-size: 16px; color: var(--muted); letter-spacing: 2px; font-style: italic; }
 
 /* ── LEGEND ── */
@@ -133,6 +136,8 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
   padding: 8px 80px 0;
   cursor: grab;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
 }
 .tl-outer::-webkit-scrollbar { display: none; }
 .tl-outer:active { cursor: grabbing; }
@@ -324,7 +329,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 
   /* Header */
   .header { padding: 16px 12px 8px; }
-  .header h1 { font-size: 22px; letter-spacing: 4px; margin-bottom: 4px; }
+  .header h1 { font-size: 27.5px; letter-spacing: 4px; margin-bottom: 4px; }
   .header p  { font-size: 12px; letter-spacing: 1px; }
 
   /* Legend — compact scrollable row */
@@ -340,7 +345,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   }
   .legend::-webkit-scrollbar { display: none; }
   .leg-all, .leg-item {
-    font-size: 9px;
+    font-size: 10.8px;
     padding: 5px 10px;
     white-space: nowrap;
     flex-shrink: 0;
@@ -349,7 +354,7 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 
   /* Slider */
   .sl-wrap { padding: 8px 14px; gap: 10px; }
-  .sl-lbl  { font-size: 9px; letter-spacing: 1px; }
+  .sl-lbl  { font-size: 10.8px; letter-spacing: 1px; }
   .sl-nav-btn { gap: 5px; }
   .sl-nav-btn .btn-arrow {
     width: 10px; height: 10px;
@@ -469,18 +474,29 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 
 /* Era labels and year marks: smooth scale transition */
 .era-lbl, .yr-mark {
-  transition: transform .2s ease, color .2s ease, text-shadow .2s ease;
+  transition: transform .2s ease, color .2s ease, text-shadow .2s ease, filter .2s ease;
   transform-origin: center center;
+  will-change: transform;
+}
+
+@keyframes timelineTextPop {
+  0%   { transform: translateX(-50%) scale(1);   filter: brightness(1); }
+  45%  { transform: translateX(-50%) scale(1.62); filter: brightness(1.18); }
+  100% { transform: translateX(-50%) scale(1.48); filter: brightness(1.08); }
 }
 .era-lbl.near {
-  transform: translateX(-50%) scale(1.45);
+  transform: translateX(-50%) translateY(-2px) scale(1.48);
   color: var(--gold);
-  text-shadow: 0 0 12px rgba(201,168,76,.6);
+  text-shadow: 0 0 14px rgba(201,168,76,.68);
+  filter: drop-shadow(0 0 8px rgba(201,168,76,.5));
+  animation: timelineTextPop .26s cubic-bezier(.2,.75,.25,1);
 }
 .yr-mark.near {
-  transform: translateX(-50%) scale(1.5);
+  transform: translateX(-50%) translateY(-2px) scale(1.52);
   color: rgba(201,168,76,1);
-  text-shadow: 0 0 10px rgba(201,168,76,.7);
+  text-shadow: 0 0 12px rgba(201,168,76,.76);
+  filter: drop-shadow(0 0 8px rgba(201,168,76,.55));
+  animation: timelineTextPop .26s cubic-bezier(.2,.75,.25,1);
 }
 
 /* Tick also lights up */
@@ -1556,7 +1572,6 @@ const sliderEl = document.getElementById('slider');
 
 // ── State ──
 let dragging      = false, dragX0 = 0, scrollX0 = 0;
-let touchX0       = 0,     touchScroll0 = 0, touchDragging = false;
 let sliderDriving = false; // slider is actively being dragged by user
 let rafPending    = false; // rAF frame already scheduled
 // Target scroll set by slider; -1 = not driven by slider this frame
@@ -1577,19 +1592,8 @@ outer.addEventListener('mousemove', e => {
   scheduleFrame();
 });
 
-// ── Touch drag on timeline ──
-outer.addEventListener('touchstart', e => {
-  if (e.touches.length !== 1) return;
-  touchX0 = e.touches[0].pageX; touchScroll0 = outer.scrollLeft; touchDragging = true;
-  sliderTarget = -1;  // Cancel any active lerp animation
-  lerpActive = false;
-}, { passive: true });
-outer.addEventListener('touchmove', e => {
-  if (!touchDragging || e.touches.length !== 1) return;
-  outer.scrollLeft = touchScroll0 + (touchX0 - e.touches[0].pageX);
-  scheduleFrame();
-}, { passive: true });
-outer.addEventListener('touchend', () => { touchDragging = false; });
+// Use native touch scrolling for iOS momentum/inertia.
+// This preserves the "swipe and glide" behavior users expect.
 
 // ── Slider thumb drag guards ──
 sliderEl.addEventListener('mousedown',  () => { sliderDriving = true; });
