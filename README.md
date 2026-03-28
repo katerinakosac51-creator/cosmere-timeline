@@ -38,7 +38,6 @@ An interactive, animated timeline of Brandon Sanderson's Cosmere books with mult
 ## Project Structure
 
 - Single-file app in [`index.html`](./index.html) (HTML + CSS + JS).
-- Legacy snapshot in [`old_index.html`](./old_index.html).
 
 ## Rights Notice
 
