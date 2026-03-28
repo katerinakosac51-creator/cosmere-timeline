@@ -226,6 +226,17 @@ html, body { min-height: 100%; background: var(--bg); color: var(--text); font-f
 .sl-lbl  { font-family: var(--ff-h); font-size: 11px; color: var(--gold-d); letter-spacing: 1.5px; white-space: nowrap; }
 .sl-btn  { cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: color .15s, background .15s; user-select: none; }
 .sl-btn:hover { color: var(--gold); background: rgba(201,168,76,.1); }
+.sl-nav-btn { display: inline-flex; align-items: center; gap: 7px; }
+.sl-nav-btn .btn-text { line-height: 1; }
+.sl-nav-btn .btn-arrow {
+  width: 8px; height: 8px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  display: inline-block;
+  opacity: .95;
+}
+.sl-nav-btn .btn-arrow.left  { transform: rotate(-135deg); }
+.sl-nav-btn .btn-arrow.right { transform: rotate(45deg); }
 
 input[type=range].slider {
   flex: 1; -webkit-appearance: none; appearance: none; height: 3px;
@@ -267,11 +278,14 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 
 /* ── LANGUAGE SELECTOR ── */
 .lang-selector {
-  position: fixed; top: 12px; right: 24px; z-index: 9998;
+  position: static;
   display: flex; gap: 8px;
   align-items: center;
+  justify-content: center;
   background: rgba(13, 13, 24, 0.95);
   padding: 8px;
+  margin: 0 auto 10px;
+  width: fit-content;
   border-radius: 6px;
   border: 1px solid rgba(201, 168, 76, 0.3);
 }
@@ -336,6 +350,12 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   /* Slider */
   .sl-wrap { padding: 8px 14px; gap: 10px; }
   .sl-lbl  { font-size: 9px; letter-spacing: 1px; }
+  .sl-nav-btn { gap: 5px; }
+  .sl-nav-btn .btn-arrow {
+    width: 10px; height: 10px;
+    border-top-width: 2.5px;
+    border-right-width: 2.5px;
+  }
   input[type=range].slider::-webkit-slider-thumb { width: 22px; height: 22px; }
   input[type=range].slider::-moz-range-thumb     { width: 22px; height: 22px; }
 
@@ -368,7 +388,12 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   #ov-blurb  { font-size: 14px; line-height: 1.6; }
 
   /* Language selector mobile */
-  .lang-selector { top: 8px; right: 8px; gap: 4px; }
+  .lang-selector {
+    position: static;
+    margin: 8px auto 6px;
+    gap: 4px;
+    width: fit-content;
+  }
   .lang-btn { font-size: 9px; padding: 5px 8px; min-width: 35px; }
 }
 
@@ -381,20 +406,52 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   position: absolute;       /* inside .tl-canvas */
   top: 0; bottom: 0;
   width: 2px;
+  --ray-rgb: 201,168,76;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(201,168,76,0) 15%,
-    rgba(201,168,76,.55) 40%,
-    rgba(201,168,76,.9) calc(var(--ay) - 2px),
-    #c9a84c var(--ay),
-    rgba(201,168,76,.4) calc(var(--ay) + 4px),
-    rgba(201,168,76,0) 75%,
+    rgba(var(--ray-rgb),0) 15%,
+    rgba(var(--ray-rgb),.55) 40%,
+    rgba(var(--ray-rgb),.9) calc(var(--ay) - 2px),
+    rgb(var(--ray-rgb)) var(--ay),
+    rgba(var(--ray-rgb),.4) calc(var(--ay) + 4px),
+    rgba(var(--ray-rgb),0) 75%,
     transparent 100%
   );
   pointer-events: none;
   z-index: 50;
   --ay: 45%;   /* axis position as % of canvas height, set by JS */
+}
+
+/* Ray burst emitted from the projection line when crossing a book */
+#proj-line::before {
+  content: '';
+  position: absolute;
+  top: var(--ay);
+  left: 50%;
+  width: 32px;
+  height: 30px;
+  transform: translate(-50%, -50%) scaleY(0.35);
+  opacity: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--ray-rgb), 0) 0%,
+    rgba(var(--ray-rgb), .75) 50%,
+    rgba(var(--ray-rgb), 0) 100%
+  );
+  border-radius: 999px;
+  filter: blur(2px) drop-shadow(0 0 7px rgba(var(--ray-rgb), .6));
+}
+
+#proj-line.ray-pulse::before {
+  animation: projRayPulse .55s cubic-bezier(.22,.61,.36,1);
+}
+
+@keyframes projRayPulse {
+  0%   { opacity: 0;   width: 34px; height: 24px;  transform: translate(-50%, -50%) scaleY(0.25); }
+  22%  { opacity: .96; width: 32px; height: 150px; transform: translate(-50%, -50%) scaleY(1); }
+  60%  { opacity: .62; width: 14px; height: 235px; transform: translate(-50%, -50%) scaleY(1.04); }
+  100% { opacity: 0;   width: 5px;  height: 305px; transform: translate(-50%, -50%) scaleY(1.08); }
 }
 
 /* Glowing diamond at the axis intercept */
@@ -405,8 +462,8 @@ input[type=range].slider:hover::-webkit-slider-thumb {
   left: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
   width: 10px; height: 10px;
-  background: var(--gold);
-  box-shadow: 0 0 10px 3px rgba(201,168,76,.7);
+  background: rgb(var(--ray-rgb));
+  box-shadow: 0 0 10px 3px rgba(var(--ray-rgb), .7);
   transition: top .05s linear;
 }
 
@@ -472,18 +529,24 @@ input[type=range].slider:hover::-webkit-slider-thumb {
 
 <div class="page">
   <header class="header">
-    <h1>THE COSMERE</h1>
     <div class="lang-selector" id="lang-selector">
       <button class="lang-btn active" data-lang="en" title="English">EN</button>
       <button class="lang-btn" data-lang="uk" title="Українська">UK</button>
     </div>
+    <h1>THE COSMERE</h1>
     <p>Shardworld Timeline · approximate in-universe chronology</p>
   </header>
   <nav class="legend" id="legend" aria-label="Planet filter"></nav>
   <div class="sl-wrap">
-    <span class="sl-lbl sl-btn" id="btn-earlier" title="Jump to start">◀ EARLIER</span>
+    <span class="sl-lbl sl-btn sl-nav-btn" id="btn-earlier" title="Jump to start">
+      <span class="btn-arrow left" aria-hidden="true"></span>
+      <span class="btn-text">EARLIER</span>
+    </span>
     <input type="range" class="slider" id="slider" min="0" max="100" value="0" aria-label="Timeline position">
-    <span class="sl-lbl sl-btn" id="btn-later" title="Jump to end">LATER ▶</span>
+    <span class="sl-lbl sl-btn sl-nav-btn" id="btn-later" title="Jump to end">
+      <span class="btn-text">LATER</span>
+      <span class="btn-arrow right" aria-hidden="true"></span>
+    </span>
   </div>
   <div class="tl-outer" id="outer">
     <div class="tl-canvas" id="canvas">
@@ -510,8 +573,8 @@ const TRANSLATIONS = {
     title: 'THE COSMERE',
     subtitle: 'Shardworld Timeline · approximate in-universe chronology',
     allWorlds: 'ALL WORLDS',
-    earlier: '◀ EARLIER',
-    later: 'LATER ▶',
+    earlier: 'EARLIER',
+    later: 'LATER',
     jumpToStart: 'Jump to start',
     jumpToEnd: 'Jump to end',
     timelinePosition: 'Timeline position',
@@ -535,13 +598,13 @@ const TRANSLATIONS = {
     title: 'КОСМЕР',
     subtitle: 'Часова шкала світів Шардів · приблизна хронологія всесвіту',
     allWorlds: 'ВСІ СВІТИ',
-    earlier: '◀ РАНІШЕ',
-    later: 'ПІЗНІШЕ ▶',
+    earlier: 'РАНІШЕ',
+    later: 'ПІЗНІШЕ',
     jumpToStart: 'Перейти на початок',
     jumpToEnd: 'Перейти в кінець',
     timelinePosition: 'Позиція на часовій шкалі',
     planetFilter: 'Фільтр за планетою',
-    forthcoming: '✦ НАЙСКОРО',
+    forthcoming: '✦ НЕЗАБАРОМ',
     yolen: 'Йолен',
     taldain: 'Талдаїн',
     sel: 'Сел',
@@ -687,38 +750,38 @@ const TRANSLATIONS = {
     'islesOfTheEmberdark_year': 'Far future · after Sixth of the Dusk · 2025',
     'theSunlitMan_year': 'Far future · latest chronologically',
     // Book blurbs Ukrainian
-    'dragonsteel_blurb_uk': 'Невидана. Історія походження Хойда. Розколювання Адоналсіума відбувається на Йолені.',
-    'theSilenceDivine_blurb_uk': 'Невидана новела на Йолені. Дослідує унікальну окрему магічну систему.',
-    'whiteSand_blurb_uk': 'Трилогія графічних романів. Панування перед піском на світі, прикованому до Сонця. Домашня планета Крісс.',
-    'elantris_blurb_uk': 'Перший опублікований космер-роман. Аони й Дор. Місто занепалих Елантріанців.',
-    'hopeOfElantris_blurb_uk': 'Коротка історія. Кульмінація Елантріса з точки зору духа Еша.',
-    'theEmperorsSoul_blurb_uk': 'Переможець премії Гюґо. У кувальки є 100 днів, щоб відновити душу Імператора.',
-    'elantrisBook2_blurb_uk': 'Найскоро. Через 10 років після Елантріса, у Фйордені. Діти Кіна як ПОВи.',
-    'elantrisBook3_blurb_uk': 'Майбутній фіналь трилогії Елантріса.',
-    'theEleventhMetal_blurb_uk': 'Коротка історія-прикончення. Стежить за молодим Келсієром, який тренується під вчителем таємничого Алломанса.',
-    'theFinalEmpire_blurb_uk': 'Попіл падає вічно. Владика Правління править. Він виявляє, що вона Помпилка.',
-    'secretHistory_blurb_uk': 'Новела. Подорож Келсієра в Когнітивному царстві. Читайте після "Героя Віків".',
-    'wellOfAscension_blurb_uk': 'Після Владики Правління. Армії облягають Лютадель. Еленд стає лідером.',
-    'heroOfAges_blurb_uk': 'Катаценда переформує Скадріаль. Гармонія народжена від Руйнування й Збереження.',
-    'shadowsForSilence_blurb_uk': 'Привиди наслідують темні ліси. Кравчиня полює на небезпечного злочинця, щоб врятувати свою сім\'ю.',
-    'warbreaker_blurb_uk': 'БіоХронічне дихання й боги, що повернулися. Походження Вашера й Ніч-Клинка на Нальтісі.',
-    'theWayOfKings_blurb_uk': 'Калладін, Шаллан, Далінар. Лицарі Радіанту повинні повернутися.',
-    'wordsOfRadiance_blurb_uk': 'Вічна буря наближається. Сетс полює. Лицарі Радіанту повертаються.',
-    'edgedancer_blurb_uk': 'Новела. Ліфт ковзає крізь приречене місто, полюючи на Темряву.',
-    'oathbringer_blurb_uk': 'Темне минуле Далінара. Вічна буря сполучає царства. Битва при Таленському міста.',
-    'dawnshard_blurb_uk': 'Новела. Рісн і Лопен здійснюють подорож на заборонений острів Еймія.',
-    'rhythmOfWar_blurb_uk': 'Фабріалі. Навані зв\'язує духа. Уритіру захоплюють.',
-    'windAndTruth_blurb_uk': 'Дуга Сетса. Битва за Шиновар. Кінець 1-ї арки Архіву Шторму.',
-    'alloyOfLaw_blurb_uk': 'Близько 300 років після Катаценди. Індустріальна Скадріаль. Дебют Вакса й Вейна.',
-    'allomancerJak_blurb_uk': 'Коротка історія. Приквели-пригоди про Алломанта Джека в Лугах.',
-    'shadowsOfSelf_blurb_uk': 'Канда таємно вбиває людей. Революція загрожує Елендель.',
-    'bandsOfMourning_blurb_uk': 'Легендарні браслети Владики Правління виникають. Південні Скадріанці розкриті.',
-    'theLostMetal_blurb_uk': 'Трелл / Автономія розкрита. Фіналь Вакса й Вейна. Космер-зв\'язки вибухають.',
-    'tressOfTheEmeraldSea_blurb_uk': 'Дівчина пливе крізь смертельні моря спор, щоб врятувати хлопця, якого вона любить. Розповідає Хойда.',
-    'yumiAndNightmarePainter_blurb_uk': 'Дві людини діляють одне тіло через світи. Дух й технологія стикаються.',
-    'sixthOfTheDusk_blurb_uk': 'Самотній мисливець виявляє, що чужинці відкрили його ізольований світ.',
-    'islesOfTheEmberdark_blurb_uk': 'Прямий сиквел. Сутінки й Лейлані навігують найпершим від Сонця, змінена чужинцями.',
-    'theSunlitMan_blurb_uk': 'Кочовник (Сігзіл) втікає через світи. Найбільш космер-важка таємна проект.',
+    'dragonsteel_blurb_uk': 'Неопубліковано. Історія походження Хойда. Розкол Адоналсіума відбувається на Йолені.',
+    'theSilenceDivine_blurb_uk': 'Неопублікована новела на Йолені. Досліджує його унікальну, окрему магічну систему.',
+    'whiteSand_blurb_uk': 'Трилогія графічних романів. Майстерність керування піском на світі з припливним захопленням. Рідна планета Крісс.',
+    'elantris_blurb_uk': 'Перший опублікований роман Космеру. Аони та Дор. Місто занепалих елантрійців.',
+    'hopeOfElantris_blurb_uk': 'Оповідання. Кульмінація «Елантріса» з погляду сеона Еша.',
+    'theEmperorsSoul_blurb_uk': 'Лауреат премії Г\'юго. У Фальсифікаторки є 100 днів, щоб відтворити душу Імператора.',
+    'elantrisBook2_blurb_uk': 'Найскоро. Події через 10 років після «Елантріса», у Фйордені. Серед POV — діти Кііна.',
+    'elantrisBook3_blurb_uk': 'Майбутній фінал трилогії «Елантріс».',
+    'theEleventhMetal_blurb_uk': 'Оповідання-приквел. Молодий Келсьєр навчається в таємничого аломанса.',
+    'theFinalEmpire_blurb_uk': 'Попіл падає вічно. Лорд-правитель царює. Він дізнається, що вона — млистороджена.',
+    'secretHistory_blurb_uk': 'Новела. Подорож Келсьєра у Когнітивному царстві. Читати після «Героя віків».',
+    'wellOfAscension_blurb_uk': 'Після загибелі Лорда-правителя. Армії облягають Лютадель. Еленд вчиться бути лідером.',
+    'heroOfAges_blurb_uk': 'Катасендр змінює Скадріаль. Гармонія народжується з Руйнування та Збереження.',
+    'shadowsForSilence_blurb_uk': 'Тіні переслідують темні ліси. Господиня заїзду полює на небезпечну здобич, щоб урятувати родину.',
+    'warbreaker_blurb_uk': 'Біохроматичне Дихання та Повернені боги. Походження Вашера й Нічнокровця на Нальтісі.',
+    'theWayOfKings_blurb_uk': 'Каладін, Шаллан і Далінар. Лицарі Сяйва мають повернутися.',
+    'wordsOfRadiance_blurb_uk': 'Насувається Вічна буря. Сет полює. Лицарі Сяйва повертаються.',
+    'edgedancer_blurb_uk': 'Новела. Ліфт ковзає крізь приречене місто, уникаючи Тьми.',
+    'oathbringer_blurb_uk': 'Темне минуле Далінара. Вічна буря зливає царства. Битва за Тейлен-Сіті.',
+    'dawnshard_blurb_uk': 'Новела. Рісн і Лопен вирушають на заборонений острів Аймія.',
+    'rhythmOfWar_blurb_uk': 'Фабріалі. Навані налагоджує зв\'язок зі спреном. Уритіру захоплено.',
+    'windAndTruth_blurb_uk': 'Арка Сета. Битва за Шиновар. Завершення 1-ї арки «Архіву Буресвітла».',
+    'alloyOfLaw_blurb_uk': 'Близько 300 років після Катасендру. Індустріальний Скадріаль. Дебют Вакса і Вейна.',
+    'allomancerJak_blurb_uk': 'Оповідання. Пульпові пригоди Аломанта Джека в Рафсах.',
+    'shadowsOfSelf_blurb_uk': 'Кандра таємно вбиває людей. Еленделю загрожує революція.',
+    'bandsOfMourning_blurb_uk': 'З\'являються легендарні браслети Лорда-правителя. Відкривається правда про Південний Скадріаль.',
+    'theLostMetal_blurb_uk': 'Трелл / Автономія розкриті. Фінал Вакса й Вейна. Космерні зв\'язки виходять на перший план.',
+    'tressOfTheEmeraldSea_blurb_uk': 'Дівчина пливе смертоносними морями спор, щоб урятувати коханого. Розповідає Хойд.',
+    'yumiAndNightmarePainter_blurb_uk': 'Двоє людей ділять одне тіло через світи. Зіткнення духу й технологій.',
+    'sixthOfTheDusk_blurb_uk': 'Самотній мисливець дізнається, що чужинці відкрили його ізольований світ.',
+    'islesOfTheEmberdark_blurb_uk': 'Пряме продовження. Даск і Лейлані мандрують світом «Шостого від Сутінків», зміненим чужинцями.',
+    'theSunlitMan_blurb_uk': 'Кочівник (Сігзіл) тікає крізь світи. Найбільш космерно насичений таємний проєкт.',
     // Book years Ukrainian
     'dragonsteel_year_uk': 'До Розколювання · Рік ~0',
     'theSilenceDivine_year_uk': 'До Розколювання · Рік ~0',
@@ -821,13 +884,15 @@ function applyTranslations() {
   
   const btnEarlier = document.getElementById('btn-earlier');
   if (btnEarlier) {
-    btnEarlier.textContent = t('earlier');
+    const btnEarlierText = btnEarlier.querySelector('.btn-text');
+    if (btnEarlierText) btnEarlierText.textContent = t('earlier');
     btnEarlier.title = t('jumpToStart');
   }
   
   const btnLater = document.getElementById('btn-later');
   if (btnLater) {
-    btnLater.textContent = t('later');
+    const btnLaterText = btnLater.querySelector('.btn-text');
+    if (btnLaterText) btnLaterText.textContent = t('later');
     btnLater.title = t('jumpToEnd');
   }
   
@@ -1337,6 +1402,7 @@ for (const b of BOOKS) {
 
   // Store book data on the cover element for hit-testing
   cw.dataset.bookIdx = String(BOOKS.indexOf(b));
+  bk.dataset.bookIdx = String(BOOKS.indexOf(b));
 
   canvas.appendChild(bk);
 }
@@ -1581,6 +1647,28 @@ ticks.forEach((el,    i) => el.dataset.x = ERAS[i].x);
 const bookEls = () => document.querySelectorAll('.bk');
 // Tighter snap for books — exactly the line crossing the cover width (54px each side)
 const BOOK_SNAP = 60;  // half cover width = 54px, give 6px grace
+const DEFAULT_RAY_RGB = '201,168,76';
+let lastRayBookIdx = null;
+let rayPulseTimer = null;
+
+function hexToRgbTriplet(hex) {
+  if (!hex || typeof hex !== 'string') return DEFAULT_RAY_RGB;
+  const cleaned = hex.trim().replace('#', '');
+  if (!/^[0-9a-fA-F]{6}$/.test(cleaned)) return DEFAULT_RAY_RGB;
+  const r = parseInt(cleaned.slice(0, 2), 16);
+  const g = parseInt(cleaned.slice(2, 4), 16);
+  const b = parseInt(cleaned.slice(4, 6), 16);
+  return `${r},${g},${b}`;
+}
+
+function triggerProjectionRayPulse() {
+  projLine.classList.remove('ray-pulse');
+  // Force reflow so the animation can restart on repeated crossings
+  void projLine.offsetWidth;
+  projLine.classList.add('ray-pulse');
+  clearTimeout(rayPulseTimer);
+  rayPulseTimer = setTimeout(() => projLine.classList.remove('ray-pulse'), 620);
+}
 
 function updateProjection() {
   // Canvas-x that aligns with the center of the viewport
@@ -1600,6 +1688,8 @@ function updateProjection() {
     el.classList.toggle('near', Math.abs(Number(el.dataset.x) - lineX) < SNAP_PX);
   });
 
+  let closestBook = null;
+  let closestDist = Infinity;
   // Highlight books whose center x is crossed by the line
   bookEls().forEach(bk => {
     if (bk.classList.contains('faded')) {
@@ -1608,7 +1698,24 @@ function updateProjection() {
     }
     const dist = Math.abs(Number(bk.dataset.x) - lineX);
     bk.classList.toggle('near', dist < BOOK_SNAP);
+    if (dist < closestDist) {
+      closestDist = dist;
+      closestBook = bk;
+    }
   });
+
+  if (closestBook && closestDist < BOOK_SNAP) {
+    const planetColor = PLANETS[closestBook.dataset.planet]?.color || '#c9a84c';
+    projLine.style.setProperty('--ray-rgb', hexToRgbTriplet(planetColor));
+    const bookIdx = Number.parseInt(closestBook.dataset.bookIdx || '', 10);
+    if (!Number.isNaN(bookIdx) && bookIdx !== lastRayBookIdx) {
+      lastRayBookIdx = bookIdx;
+      triggerProjectionRayPulse();
+    }
+  } else {
+    projLine.style.setProperty('--ray-rgb', DEFAULT_RAY_RGB);
+    lastRayBookIdx = null;
+  }
 }
 
 // ── Unified render frame ──
