@@ -1357,6 +1357,15 @@ function setFilter(pid) {
     el.classList.toggle('faded', !!pid && el.dataset.planet !== pid));
 }
 
+// If a planet filter is active, clicking/tapping outside the legend clears it.
+document.addEventListener('pointerdown', (e) => {
+  if (!activePlanet) return;
+  const target = e.target;
+  if (!(target instanceof Element)) return;
+  if (target.closest('#legend')) return; // keep normal legend interactions
+  setFilter(null);
+}, { passive: true });
+
 // ─────────────────────────────────────────────
 // CANVAS
 // ─────────────────────────────────────────────
